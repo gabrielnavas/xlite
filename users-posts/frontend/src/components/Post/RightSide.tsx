@@ -10,22 +10,24 @@ type Props = {
     createdAt: Date;
     text: string;
   }
+  onClickUpdate: () => void
 }
 
 const style = {
   display: 'flex',
   flexDirection: 'column',
+  width: '100%',
 } as React.CSSProperties;
 
-const RightSide = ({ post, user }: Props) => {
+const RightSide = ({ post, user, onClickUpdate }: Props) => {
   return (
-    <section style={style}>
-      <Header 
-        datePost={post.createdAt} 
-        name={user.name} 
+    <section style={style} >
+      <Header
+        datePost={post.createdAt}
+        name={user.name}
         username={user.username}
       />
-      <TextPost text={post.text} />
+      <TextPost text={post.text} onClickUpdate={onClickUpdate} />
     </section>
   )
 }

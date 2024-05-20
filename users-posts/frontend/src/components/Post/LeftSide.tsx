@@ -5,7 +5,7 @@ type Props = {
 }
 
 const style = {
-  padding: '0.5rem 1rem 1rem 0.25rem',
+  padding: '0.75rem 1rem 1rem 0.50rem',
 } as React.CSSProperties;
 
 const LeftSide = ({avatarUrl}: Props) => {

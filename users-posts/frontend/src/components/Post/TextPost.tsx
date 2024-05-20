@@ -1,16 +1,29 @@
-type Props = { 
+import { Container, styled } from "@mui/material";
+
+type Props = {
   text: string;
+  onClickUpdate: () => void
 };
 
-const style = {
+const Text = styled(Container)(({ theme }) => ({
+  display: 'flex',
+  minHeight: '5rem',
   padding: '0.5rem 0.5rem 0.5rem 0',
-} as React.CSSProperties;
+  marginTop: '0.5rem',
+  width: '100%',
+  cursor: 'pointer',
+  transition: 'background-color 0.3s',
+  '&:hover': {
+    backgroundColor: theme.palette.background.paper,
+  },
+  borderRadius: '0.5rem',
+}));
 
-const TextPost = ({ text }: Props) => {
+const TextPost = ({ text, onClickUpdate }: Props) => {
   return (
-    <div style={style}>
-      { text }
-    </div>
+    <Text onClick={onClickUpdate}>
+      {text}
+    </Text>
   )
 }
 

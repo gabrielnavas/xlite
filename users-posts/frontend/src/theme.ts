@@ -1,11 +1,11 @@
 import { createTheme } from '@mui/material/styles';
 
 // Definição das cores do Twitter Dark
-const twitterBlue = '#1DA1F2';
-const twitterWhite = '#FFFFFF';
-const twitterBlack = '#000000';
-const twitterDarkGray = '#15202B';
-const twitterLightGray = '#AAB8C2';
+export const twitterBlue = '#1DA1F2';
+export const twitterWhite = '#FFFFFF';
+export const twitterBlack = '#000000';
+export const twitterDarkGray = '#15202B';
+export const twitterLightGray = '#AAB8C2';
 
 const theme = createTheme({
   palette: {

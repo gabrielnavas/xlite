@@ -15,8 +15,11 @@
     "@mui/icons-material": "^5.15.18",
     "@mui/material": "^5.15.18",
     "date-fns": "^3.6.0",
+    "formi": "^0.4.0",
+    "formik": "^2.4.6",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
