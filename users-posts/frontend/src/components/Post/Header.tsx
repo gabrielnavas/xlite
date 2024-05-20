@@ -9,6 +9,7 @@ type Props = {
   name: string;
   username: string;
   datePost: Date;
+  openOnRemoveQuestionShield: () => void
 }
 
 const style = {
@@ -17,12 +18,14 @@ const style = {
   alignItems: 'center'
 } as React.CSSProperties;
 
-const Header = ({ name, username, datePost }: Props) => {
+const Header = ({ name, username, datePost, openOnRemoveQuestionShield }: Props) => {
   const postIsMyOwn = Math.floor(Math.random() * 2) > 0;
 
   const optionHeader = postIsMyOwn && (
     <span>
-      <OptionsHeader />
+      <OptionsHeader
+        openOnRemoveQuestionShield={openOnRemoveQuestionShield}
+      />
     </span>
   )
 

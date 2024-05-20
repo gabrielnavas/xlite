@@ -9,8 +9,9 @@ type Props = {
   post: {
     createdAt: Date;
     text: string;
+    onClickUpdate: () => void;
+    openOnRemoveQuestionShield: () => void;
   }
-  onClickUpdate: () => void
 }
 
 const style = {
@@ -19,15 +20,16 @@ const style = {
   width: '100%',
 } as React.CSSProperties;
 
-const RightSide = ({ post, user, onClickUpdate }: Props) => {
+const RightSide = ({ post, user }: Props) => {
   return (
     <section style={style} >
       <Header
         datePost={post.createdAt}
         name={user.name}
         username={user.username}
+        openOnRemoveQuestionShield={post.openOnRemoveQuestionShield}
       />
-      <PostDescription text={post.text} onClickUpdate={onClickUpdate} />
+      <PostDescription text={post.text} onClickUpdate={post.onClickUpdate} />
     </section>
   )
 }

@@ -6,12 +6,13 @@ import { Menu, PopoverOrigin } from "@mui/material";
 import MenuItemCustom from "./MenuItemHeader";
 import MenuButtonHeader from "./MenuButtonHeader";
 
+type Props = {
+  openOnRemoveQuestionShield: () => void
+}
 
-const MenuHeader = () => {
+const MenuHeader = ({ openOnRemoveQuestionShield }: Props) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-
-
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -44,7 +45,7 @@ const MenuHeader = () => {
           icon={<Delete />}
           isDanger
           label="Remove"
-          onClick={() => { }}
+          onClick={openOnRemoveQuestionShield}
         />
       </Menu>
     </div>

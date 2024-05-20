@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { Paper } from "@mui/material";
 
 import LeftSide from "./LeftSide";
 import RightSide from "./RightSide";
 import ModalUpdate from "./ModalUpdate/ModalUpdate";
-import { useState } from "react";
+import DialogRemovePost from "./DialogDelete";
 
 type Props = {
   user: {
@@ -12,9 +13,11 @@ type Props = {
     username: string;
   },
   post: {
+    id: string,
     text: string;
     createdAt: Date;
-  }
+    onRemove: (postId: string) => void
+  },
 }
 
 const style = {
@@ -26,22 +29,15 @@ const style = {
 
 const Post = ({ user, post }: Props) => {
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [removeShieldOpen, setRemoveShieldOpen] = useState(false);
 
   const onFinishUpdate = (data: { description: string }): void => {
-    // const maxLenthWord = 30;
-    // const word = data.description
-    //   .split(" ")
-    //   .map(word => {
-    //     let finalWord = ''
-    //     for(let i=0; i < word.length; i+=maxLenthWord) {
-    //       finalWord += `${word.substring(maxLenthWord)}-\n${word.substring(maxLenthWord, word.length)}` 
-    //     }
-    //     return finalWord;
-    //   })
-    //   .join(' ')
     post.text = data.description;
     setUpdateModalOpen(false);
+  }
 
+  const onClickRemove = (): void => {
+    post.onRemove(post.id)
   }
 
   return (
@@ -49,16 +45,15 @@ const Post = ({ user, post }: Props) => {
       <LeftSide
         avatarUrl={user.avatarUrl}
       />
-
       <RightSide
-        onClickUpdate={() => setUpdateModalOpen(true)}
         post={{
           createdAt: post.createdAt,
-          text: post.text
+          text: post.text,
+          onClickUpdate: () => setUpdateModalOpen(true),
+          openOnRemoveQuestionShield: () => setRemoveShieldOpen(true)
         }}
         user={user}
       />
-
       <ModalUpdate
         open={updateModalOpen}
         onClose={() => setUpdateModalOpen(false)}
@@ -67,6 +62,12 @@ const Post = ({ user, post }: Props) => {
           user: user,
           post: post
         }} />
+      <DialogRemovePost
+        onClickClose={() => setRemoveShieldOpen(false)}
+        onClickRemove={onClickRemove}
+        onClickOpen={() => setRemoveShieldOpen(true)}
+        open={removeShieldOpen}
+      />
     </Paper>
   )
 }
