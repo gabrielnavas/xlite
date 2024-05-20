@@ -2,7 +2,7 @@ import { Paper } from "@mui/material";
 
 import LeftSide from "./LeftSide";
 import RightSide from "./RightSide";
-import UpdatePostModal from "./UpdatePostModal";
+import ModalUpdate from "./ModalUpdate/ModalUpdate";
 import { useState } from "react";
 
 type Props = {
@@ -28,8 +28,20 @@ const Post = ({ user, post }: Props) => {
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
 
   const onFinishUpdate = (data: { description: string }): void => {
+    // const maxLenthWord = 30;
+    // const word = data.description
+    //   .split(" ")
+    //   .map(word => {
+    //     let finalWord = ''
+    //     for(let i=0; i < word.length; i+=maxLenthWord) {
+    //       finalWord += `${word.substring(maxLenthWord)}-\n${word.substring(maxLenthWord, word.length)}` 
+    //     }
+    //     return finalWord;
+    //   })
+    //   .join(' ')
     post.text = data.description;
     setUpdateModalOpen(false);
+
   }
 
   return (
@@ -47,7 +59,7 @@ const Post = ({ user, post }: Props) => {
         user={user}
       />
 
-      <UpdatePostModal
+      <ModalUpdate
         open={updateModalOpen}
         onClose={() => setUpdateModalOpen(false)}
         onFinishUpdate={onFinishUpdate}

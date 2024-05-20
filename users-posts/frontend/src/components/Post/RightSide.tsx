@@ -1,5 +1,5 @@
 import Header from "./Header";
-import TextPost from "./TextPost";
+import PostDescription from "./PostDescription";
 
 type Props = {
   user: {
@@ -27,7 +27,7 @@ const RightSide = ({ post, user, onClickUpdate }: Props) => {
         name={user.name}
         username={user.username}
       />
-      <TextPost text={post.text} onClickUpdate={onClickUpdate} />
+      <PostDescription text={post.text} onClickUpdate={onClickUpdate} />
     </section>
   )
 }
