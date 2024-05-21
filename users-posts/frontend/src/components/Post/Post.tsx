@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Paper } from "@mui/material";
 
-import LeftSide from "./LeftSide";
-import RightSide from "./RightSide";
+import LeftSide from "./LeftSide/LeftSide";
+import RightSide from "./RightSide/RightSide";
 import ModalUpdate from "./ModalUpdate/ModalUpdate";
-import DialogRemovePost from "./DialogDelete";
+import RemoveDialog from "./RemovePost/RemoveDialog";
 
 type Props = {
   user: {
@@ -62,7 +62,7 @@ const Post = ({ user, post }: Props) => {
           user: user,
           post: post
         }} />
-      <DialogRemovePost
+      <RemoveDialog
         onClickClose={() => setRemoveShieldOpen(false)}
         onClickRemove={onClickRemove}
         onClickOpen={() => setRemoveShieldOpen(true)}

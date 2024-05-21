@@ -47,7 +47,7 @@ const BoxInside = ({ data, onFinishUpdate }: Props) => {
 
   return (
     <Box sx={style}>
-      <div>Created at ${date}</div>
+      <div>Created at {date}</div>
       <form onSubmit={formik.handleSubmit}>
         <TextField
           fullWidth

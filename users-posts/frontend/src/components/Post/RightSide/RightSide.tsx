@@ -1,4 +1,4 @@
-import Header from "./Header";
+import HeaderPost from "../HeaderPost/HeaderPost";
 import PostDescription from "./PostDescription";
 
 type Props = {
@@ -23,7 +23,7 @@ const style = {
 const RightSide = ({ post, user }: Props) => {
   return (
     <section style={style} >
-      <Header
+      <HeaderPost
         datePost={post.createdAt}
         name={user.name}
         username={user.username}

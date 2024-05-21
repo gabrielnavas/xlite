@@ -2,7 +2,7 @@ import At from "./At";
 import DatePost from "./DatePost";
 import Dot from "./Dot";
 import Name from "./Name";
-import OptionsHeader from "./MenuHeader";
+import MenuHeader from "./MenuHeader";
 import Username from "./Username";
 
 type Props = {
@@ -18,12 +18,12 @@ const style = {
   alignItems: 'center'
 } as React.CSSProperties;
 
-const Header = ({ name, username, datePost, openOnRemoveQuestionShield }: Props) => {
+const HeaderPost = ({ name, username, datePost, openOnRemoveQuestionShield }: Props) => {
   const postIsMyOwn = Math.floor(Math.random() * 2) > 0;
 
   const optionHeader = postIsMyOwn && (
     <span>
-      <OptionsHeader
+      <MenuHeader
         openOnRemoveQuestionShield={openOnRemoveQuestionShield}
       />
     </span>
@@ -43,4 +43,4 @@ const Header = ({ name, username, datePost, openOnRemoveQuestionShield }: Props)
   )
 }
 
-export default Header;
+export default HeaderPost;

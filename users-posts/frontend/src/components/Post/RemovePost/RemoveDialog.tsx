@@ -7,7 +7,7 @@ type Props = {
   open: boolean
 }
   
-const DialogRemovePost = ({ onClickOpen, open, onClickClose, onClickRemove }: Props) => {
+const RemoveDialog = ({ onClickOpen, open, onClickClose, onClickRemove }: Props) => {
   return (
     <Dialog
       open={open}
@@ -31,4 +31,4 @@ const DialogRemovePost = ({ onClickOpen, open, onClickClose, onClickRemove }: Pr
   );
 }
 
-export default DialogRemovePost;
+export default RemoveDialog;
