@@ -29,7 +29,7 @@ const FeedPage = () => {
   const [user, setUser] = useState<User>({} as User);
 
   useEffect(() => {
-    document.title = "Posts";
+    document.title = "Feed | Xlite";
   }, []);
 
   useEffect(() => {

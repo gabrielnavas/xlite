@@ -1,24 +1,5 @@
-import Auth from "./pages/Auth";
-import FeedPage from "./pages/Feed";
+import RouterCustom from "./Router";
 
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-
-
-const router = createBrowserRouter([{
-  path: "/",
-  element: <FeedPage />,
-}, {
-  path: "/auth",
-  element: <Auth />,
-},]);
-
-function App() {
-  return (
-    <RouterProvider router={router} />
-  )
-}
+const App = () => <RouterCustom />
 
 export default App
