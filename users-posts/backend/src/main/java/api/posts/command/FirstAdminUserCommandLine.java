@@ -27,7 +27,11 @@ public class FirstAdminUserCommandLine implements CommandLineRunner {
 
     private void createAdminUser() {
         var dto = createRegisterRequestDTO();
-        registerUserService.registerUserAdmin(dto);
+        try {
+            registerUserService.registerUserAdmin(dto);
+        } catch (Exception ex) {
+            System.out.println("admin already registred");
+        }
     }
 
 
