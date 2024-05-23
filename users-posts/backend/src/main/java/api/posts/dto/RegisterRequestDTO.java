@@ -11,7 +11,7 @@ public record RegisterRequestDTO(
         String name,
 
         @NotBlank
-        @Size(min = 6, max = 100, message = "The length of username must be between 6 and 100 characters.")
+        @Size(min = 3, max = 100, message = "The length of username must be between 3 and 100 characters.")
         String username,
 
         @NotBlank

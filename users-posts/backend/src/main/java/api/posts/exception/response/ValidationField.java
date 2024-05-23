@@ -1,13 +1,13 @@
-package api.posts.exception.models;
+package api.posts.exception.response;
 
 import lombok.Data;
 
 @Data
-public class ValidationErrorResponse {
+public class ValidationField {
     private String field;
     private String description;
 
-    public ValidationErrorResponse(String field, String description) {
+    public ValidationField(String field, String description) {
         this.field = field;
         this.description = description;
     }

@@ -5,7 +5,6 @@ import api.posts.models.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -42,16 +41,12 @@ public class TokenService {
     public String validateTokenAndGetSubject(String token) {
         if (token == null) return null;
         final String tokenWithoutBearer = token.replace("Bearer ", "");
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            return JWT.require(algorithm)
-                    .withIssuer("login-auth-api")
-                    .build()
-                    .verify(tokenWithoutBearer)
-                    .getSubject();
-        } catch (JWTVerificationException ex) {
-            return null;
-        }
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+        return JWT.require(algorithm)
+                .withIssuer("login-auth-api")
+                .build()
+                .verify(tokenWithoutBearer)
+                .getSubject();
     }
 
     private Instant generateExpirationDate() {
