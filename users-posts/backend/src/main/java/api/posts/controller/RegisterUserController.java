@@ -5,6 +5,7 @@ import api.posts.dto.RegisterRequestDTO;
 import api.posts.infra.security.TokenService;
 import api.posts.models.User;
 import api.posts.service.RegisterUserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,7 @@ public class RegisterUserController {
     private final TokenService tokenService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDTO> register(@RequestBody RegisterRequestDTO body) {
+    public ResponseEntity<AuthResponseDTO> register(@Valid @RequestBody RegisterRequestDTO body) {
         User user = registerUserService.registerUser(body);
         String token = tokenService.generateToken(user);
         return ResponseEntity.ok(new AuthResponseDTO(token));

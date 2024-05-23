@@ -5,6 +5,7 @@ import api.posts.dto.LoginRequestDTO;
 import api.posts.infra.security.TokenService;
 import api.posts.models.User;
 import api.posts.repository.UserRepository;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +24,7 @@ public class LoginController {
     private final TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginRequestDTO body) {
+    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginRequestDTO body) {
         User user = userRepository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("user not found"));
         if (passwordEncoder.matches(body.password(), user.getPassword())) {
             String token = tokenService.generateToken(user);
