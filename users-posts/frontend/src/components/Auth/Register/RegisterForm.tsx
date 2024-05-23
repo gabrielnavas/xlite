@@ -3,9 +3,10 @@ import { Button, TextField } from "@mui/material";
 import { useFormik } from "formik";
 
 import * as Yup from 'yup';
+import register from "../../../services/register";
 
 type RegisterForm = {
-  fullname: string
+  fullName: string
   username: string
   email: string
   password: string
@@ -14,7 +15,7 @@ type RegisterForm = {
 
 const RegisterForm = () => {
   const validationSchema = Yup.object<RegisterForm>({
-    fullname: Yup
+    fullName: Yup
       .string()
       .required('Full name is required')
       .min(2, 'Full name should be of minimum 2 characters length')
@@ -37,7 +38,7 @@ const RegisterForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      fullname: '',
+      fullName: '',
       email: '',
       username: '',
       password: '',
@@ -46,23 +47,43 @@ const RegisterForm = () => {
     validationSchema: validationSchema,
     onSubmit: (values: RegisterForm, { resetForm }) => {
       console.log(values);
-      resetForm();
+      register(
+        values.fullName,
+        values.username,
+        values.email,
+        values.password,
+        values.passwordConfirmation
+      ).then((result) => {
+        if (!result.success) {
+          // adicionar snack message
+          alert(result.message);
+        } else {
+          // adicionar snack message
+          resetForm();
+          console.log('deu bom')
+        }
+      })
+        .catch((ex) => {
+          // adicionar snack message
+          console.log(ex);
+          console.log('deu ruim')
+        })
     },
   });
 
   return (
     <form onSubmit={formik.handleSubmit}>
-       <TextField
+      <TextField
         fullWidth
-        id="fullname"
-        name="fullname"
-        label="Fullname"
+        id="fullName"
+        name="fullName"
+        label="Full name"
         margin="normal"
-        value={formik.values.fullname}
+        value={formik.values.fullName}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        error={formik.touched.fullname && Boolean(formik.errors.fullname)}
-        helperText={formik.touched.fullname && formik.errors.fullname}
+        error={formik.touched.fullName && Boolean(formik.errors.fullName)}
+        helperText={formik.touched.fullName && formik.errors.fullName}
       />
       <TextField
         fullWidth
