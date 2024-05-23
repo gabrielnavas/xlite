@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from 'yup';
 
 type RegisterForm = {
+  fullname: string
   username: string
   email: string
   password: string
@@ -13,6 +14,11 @@ type RegisterForm = {
 
 const RegisterForm = () => {
   const validationSchema = Yup.object<RegisterForm>({
+    fullname: Yup
+      .string()
+      .required('Full name is required')
+      .min(2, 'Full name should be of minimum 2 characters length')
+      .max(100, 'Full name should be of maximum 255 characters length'),
     username: Yup
       .string()
       .required('Username is required')
@@ -31,6 +37,7 @@ const RegisterForm = () => {
 
   const formik = useFormik({
     initialValues: {
+      fullname: '',
       email: '',
       username: '',
       password: '',
@@ -45,6 +52,18 @@ const RegisterForm = () => {
 
   return (
     <form onSubmit={formik.handleSubmit}>
+       <TextField
+        fullWidth
+        id="fullname"
+        name="fullname"
+        label="Fullname"
+        margin="normal"
+        value={formik.values.fullname}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        error={formik.touched.fullname && Boolean(formik.errors.fullname)}
+        helperText={formik.touched.fullname && formik.errors.fullname}
+      />
       <TextField
         fullWidth
         id="username"

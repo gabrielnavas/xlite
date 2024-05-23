@@ -4,7 +4,6 @@ package api.posts.infra.security;
 import api.posts.models.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,20 +21,13 @@ public class TokenService {
     private String secret;
 
     public String generateToken(User user) {
-        try {
-            // ter certeza que o token veio desse servidor
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+        Algorithm algorithm = Algorithm.HMAC256(secret);
 
-            return JWT.create()
-                    .withIssuer("login-auth-api") // nome do micro servico ou servidor
-                    .withSubject(user.getEmail())
-                    .withExpiresAt(generateExpirationDate())
-                    .sign(algorithm);
-
-
-        } catch (JWTCreationException exception) {
-            throw new RuntimeException("Error while authenticatig");
-        }
+        return JWT.create()
+                .withIssuer("login-auth-api") // nome do micro servico ou servidor
+                .withSubject(user.getEmail())
+                .withExpiresAt(generateExpirationDate())
+                .sign(algorithm);
     }
 
     public String validateTokenAndGetSubject(String token) {
