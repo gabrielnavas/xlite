@@ -30,14 +30,16 @@ public class RegisterUserServiceImpl implements RegisterUserService {
     }
 
     @Override
-    public User registerUserAdmin(RegisterRequestDTO dto) {
+    public void registerUserAdmin(RegisterRequestDTO dto) {
         User user = makeUser(dto.fullName(), dto.username(), dto.email(), dto.password());
         user.setRoles(new HashSet<>(List.of(Role.USER, Role.ADMIN)));
-        user = userRepository.save(user);
-        return user;
+        boolean userAlreadyExists = userRepository.findByEmail(dto.email()).isEmpty();
+        if (userAlreadyExists) {
+            userRepository.save(user);
+        }
     }
 
-    private User makeUser(String fullname, String username, String email, String password) {
+    private User makeUser(String fullName, String username, String email, String password) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
             throw new UserAlreadyExistsWithEmail();
@@ -51,7 +53,7 @@ public class RegisterUserServiceImpl implements RegisterUserService {
         User newUser = new User();
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setEmail(email);
-        newUser.setFullName(fullname);
+        newUser.setFullName(fullName);
         newUser.setUsername(username);
         newUser.setRoles(new HashSet<>(Collections.singletonList(Role.USER)));
 

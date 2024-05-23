@@ -6,5 +6,5 @@ import api.posts.models.User;
 public interface RegisterUserService {
     User registerUser(RegisterRequestDTO dto);
 
-    User registerUserAdmin(RegisterRequestDTO dto);
+    void registerUserAdmin(RegisterRequestDTO dto);
 }
