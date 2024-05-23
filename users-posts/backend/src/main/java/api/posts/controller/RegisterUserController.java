@@ -3,7 +3,6 @@ package api.posts.controller;
 import api.posts.dto.AuthResponseDTO;
 import api.posts.dto.RegisterRequestDTO;
 import api.posts.infra.security.TokenService;
-import api.posts.models.User;
 import api.posts.service.RegisterUserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -23,8 +22,9 @@ public class RegisterUserController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDTO> register(@Valid @RequestBody RegisterRequestDTO body) {
-        User user = registerUserService.registerUser(body);
-        String token = tokenService.generateToken(user);
-        return ResponseEntity.ok(new AuthResponseDTO(token));
+        throw new RuntimeException("any error");
+//        User user = registerUserService.registerUser(body);
+//        String token = tokenService.generateToken(user);
+//        return ResponseEntity.ok(new AuthResponseDTO(token));
     }
 }
