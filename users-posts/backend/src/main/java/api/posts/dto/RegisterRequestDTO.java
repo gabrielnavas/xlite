@@ -1,5 +1,6 @@
 package api.posts.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -7,8 +8,9 @@ import jakarta.validation.constraints.Size;
 public record RegisterRequestDTO(
 
         @NotBlank
-        @Size(min = 3, max = 100, message = "The length of name must be between 3 and 100 characters.")
-        String name,
+        @Size(min = 3, max = 100, message = "The length of full name must be between 3 and 100 characters.")
+        @JsonProperty("full_name")
+        String fullName,
 
         @NotBlank
         @Size(min = 3, max = 100, message = "The length of username must be between 3 and 100 characters.")

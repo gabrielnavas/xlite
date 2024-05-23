@@ -24,20 +24,20 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 
     @Override
     public User registerUser(RegisterRequestDTO dto) {
-        User user = makeUser(dto.name(), dto.username(), dto.email(), dto.password());
+        User user = makeUser(dto.fullName(), dto.username(), dto.email(), dto.password());
         user = userRepository.save(user);
         return user;
     }
 
     @Override
     public User registerUserAdmin(RegisterRequestDTO dto) {
-        User user = makeUser(dto.name(), dto.username(), dto.email(), dto.password());
+        User user = makeUser(dto.fullName(), dto.username(), dto.email(), dto.password());
         user.setRoles(new HashSet<>(List.of(Role.USER, Role.ADMIN)));
         user = userRepository.save(user);
         return user;
     }
 
-    private User makeUser(String name, String username, String email, String password) {
+    private User makeUser(String fullname, String username, String email, String password) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
             throw new UserAlreadyExistsWithEmail();
@@ -51,7 +51,7 @@ public class RegisterUserServiceImpl implements RegisterUserService {
         User newUser = new User();
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setEmail(email);
-        newUser.setName(name);
+        newUser.setFullName(fullname);
         newUser.setUsername(username);
         newUser.setRoles(new HashSet<>(Collections.singletonList(Role.USER)));
 

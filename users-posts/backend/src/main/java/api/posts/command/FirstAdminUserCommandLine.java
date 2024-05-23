@@ -46,7 +46,7 @@ public class FirstAdminUserCommandLine implements CommandLineRunner {
         final String name = adminEmail.split("@")[0];
 
         User user = new User();
-        user.setName(name);
+        user.setFullName(name);
         user.setEmail(adminEmail);
         user.setUsername(name);
         user.setPassword(passwordEncoder.encode(adminPassword));
