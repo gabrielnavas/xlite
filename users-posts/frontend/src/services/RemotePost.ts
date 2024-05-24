@@ -1,5 +1,16 @@
 import localAuthManager from "./LocalAuthManager";
 
+type PostBody = {
+  post_id: string;
+  created_at: Date;
+  description: string;
+  owner_id: string
+  owner_avatar_url: string;
+  owner_full_name: string;
+  owner_username: string;
+}
+
+
 type Post = {
   id: string;
   createdAt: Date;
@@ -12,13 +23,13 @@ type Post = {
   }
 }
 
-type PostResponse = {
-  body?: Post,
+type PostResponse<T> = {
+  body?: T,
   message: string
   success: boolean
 }
 
-const createPost = async (description: string): Promise<PostResponse> => {
+const createPost = async (description: string): Promise<PostResponse<Post>> => {
   const token = localAuthManager().getToken(); 
   
   const body = {
@@ -43,7 +54,7 @@ const createPost = async (description: string): Promise<PostResponse> => {
     }
   }
 
-  const data = await response.json()
+  const data = await response.json() as PostBody
   return {
     message: 'Post created.',
     success: true,
@@ -61,8 +72,47 @@ const createPost = async (description: string): Promise<PostResponse> => {
   }
 }
 
+
+const getAllPosts = async (): Promise<PostResponse<Post[]>> => {
+  const token = localAuthManager().getToken(); 
+
+  const url = `${import.meta.env.VITE_ENDPOINT_API}/post`
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+  })
+
+  if (!response.ok) {
+    return {
+      message: 'try again later',
+      success: false,
+    }
+  }
+
+  const data = await response.json()
+  return {
+    message: 'posts fetched.',
+    success: true,
+    body: data.map((post: PostBody) => ({
+      id: post.post_id,
+      owner: {
+        id: post.owner_id,
+        avatarUrl: post.owner_avatar_url,
+        fullName: post.owner_full_name,
+        username: post.owner_username,
+      },
+      description: post.description,
+      createdAt: new Date(post.created_at)
+    })),
+  }
+}
+
 const remotePost = () => {
-  return { createPost }
+  return { createPost, getAllPosts }
 }
 
 export default remotePost

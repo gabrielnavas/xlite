@@ -56,18 +56,28 @@ const Right = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const inTimeLine = (postId: string) => posts.find(p => p.id === postId);
+    remotePost().getAllPosts().then(result => {
+      if (result.body) {
+        const newPosts = result.body.filter(post => !inTimeLine(post.id))
+        setPosts([...newPosts, ...posts])
+      }
+    })
+  }, []);
+
   const onCreatePost = async (description: string) => {
     try {
-      const result = await remotePost().createPost(description) 
-      if(!result.success) {
+      const result = await remotePost().createPost(description)
+      if (!result.success) {
         console.log(result.message)
       } else {
-        if(result.body) {
+        if (result.body) {
           const newPost: Post = result.body
           setPosts([newPost, ...posts])
         }
       }
-    }catch(ex) {
+    } catch (ex) {
       console.log(ex)
     }
   }
@@ -86,7 +96,7 @@ const Right = () => {
         {
           posts.length === 0 ? (
             <PostMessage message="Start with post..." />
-          ): (
+          ) : (
             posts.map((post) => (
               <PostComponent
                 key={post.id}
