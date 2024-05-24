@@ -49,19 +49,6 @@ const Right = () => {
 
 
   useEffect(() => {
-    // const posts: Post[] = new Array(50).fill('').map((_, index) => ({
-    //   id: (index + 1).toString(),
-    //   createdAt: new Date('2024-05-20T16:38:06.362Z'),
-    //   description: 'oi',
-    //   owner: {
-    //     id: (index + 1*posts.length).toString(),
-    //     avatarUrl: "https://pbs.twimg.com/profile_images/1743633889216630784/j6WRSKS4_400x400.jpg",
-    //     fullName: 'Mário',
-    //     username: 'mario'
-    //   }
-    // }));
-
-    // setPosts(posts);
     setUser({
       avatarUrl: "https://pbs.twimg.com/profile_images/1743633889216630784/j6WRSKS4_400x400.jpg",
       name: 'Gabs',
@@ -106,7 +93,7 @@ const Right = () => {
                 user={user!}
                 post={{
                   id: post.id,
-                  createdAt: new Date('2024-05-20T16:38:06.362Z'),
+                  createdAt: post.createdAt,
                   text: post.description,
                   onRemove: () => onRemovePost(post.id),
                 }}
