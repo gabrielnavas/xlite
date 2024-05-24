@@ -1,7 +1,9 @@
 import { styled } from "@mui/material";
 import { useEffect, useState } from "react";
 import CreatePost from "../Post/CreatePost/CreatePost";
-import Post from "../Post/Post";
+import PostComponent from "../Post/Post";
+import remotePost from "../../services/RemotePost";
+import PostMessage from "../Post/PostMessage";
 
 const style = {
   display: 'flex',
@@ -26,6 +28,12 @@ type Post = {
   id: string;
   createdAt: Date;
   description: string;
+  owner: {
+    id: string
+    avatarUrl: string;
+    fullName: string;
+    username: string;
+  }
 }
 
 type User = {
@@ -41,13 +49,19 @@ const Right = () => {
 
 
   useEffect(() => {
-    const posts: Post[] = new Array(50).fill('').map((_, index) => ({
-      id: (index + 1).toString(),
-      createdAt: new Date('2024-05-20T16:38:06.362Z'),
-      description: 'oi'
-    }));
+    // const posts: Post[] = new Array(50).fill('').map((_, index) => ({
+    //   id: (index + 1).toString(),
+    //   createdAt: new Date('2024-05-20T16:38:06.362Z'),
+    //   description: 'oi',
+    //   owner: {
+    //     id: (index + 1*posts.length).toString(),
+    //     avatarUrl: "https://pbs.twimg.com/profile_images/1743633889216630784/j6WRSKS4_400x400.jpg",
+    //     fullName: 'Mário',
+    //     username: 'mario'
+    //   }
+    // }));
 
-    setPosts(posts);
+    // setPosts(posts);
     setUser({
       avatarUrl: "https://pbs.twimg.com/profile_images/1743633889216630784/j6WRSKS4_400x400.jpg",
       name: 'Gabs',
@@ -55,13 +69,20 @@ const Right = () => {
     });
   }, []);
 
-  const onCreatePost = (description: string) => {
-    const newPost = {
-      id: (posts.length + 1).toString(),
-      createdAt: new Date(),
-      description: description,
-    } as Post
-    setPosts([newPost, ...posts])
+  const onCreatePost = async (description: string) => {
+    try {
+      const result = await remotePost().createPost(description) 
+      if(!result.success) {
+        console.log(result.message)
+      } else {
+        if(result.body) {
+          const newPost: Post = result.body
+          setPosts([newPost, ...posts])
+        }
+      }
+    }catch(ex) {
+      console.log(ex)
+    }
   }
 
   const onRemovePost = (postId: string) => {
@@ -76,18 +97,22 @@ const Right = () => {
           createPostOnClick: onCreatePost,
         }} />
         {
-          posts.map((post) => (
-            <Post
-              key={post.id}
-              user={user!}
-              post={{
-                id: post.id,
-                createdAt: new Date('2024-05-20T16:38:06.362Z'),
-                text: post.description,
-                onRemove: () => onRemovePost(post.id),
-              }}
-            />
-          ))
+          posts.length === 0 ? (
+            <PostMessage message="Start with post..." />
+          ): (
+            posts.map((post) => (
+              <PostComponent
+                key={post.id}
+                user={user!}
+                post={{
+                  id: post.id,
+                  createdAt: new Date('2024-05-20T16:38:06.362Z'),
+                  text: post.description,
+                  onRemove: () => onRemovePost(post.id),
+                }}
+              />
+            ))
+          )
         }
       </Feed>
     </Container>

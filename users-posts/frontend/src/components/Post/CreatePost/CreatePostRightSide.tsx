@@ -24,7 +24,10 @@ const CreatePostRightSide = ({createPostOnClick}: Props) => {
       description: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values: CreateForm) => createPostOnClick(values.description)
+    onSubmit: (values: CreateForm, {resetForm}) => {
+      createPostOnClick(values.description)
+      resetForm();
+    }
   });
 
   return (
