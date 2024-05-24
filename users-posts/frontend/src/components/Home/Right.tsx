@@ -1,7 +1,7 @@
+import { styled } from "@mui/material";
 import { useEffect, useState } from "react";
-
-import Post from "../components/Post/Post";
-import CreatePost from "../components/Post/CreatePost/CreatePost";
+import CreatePost from "../Post/CreatePost/CreatePost";
+import Post from "../Post/Post";
 
 const style = {
   display: 'flex',
@@ -12,11 +12,15 @@ const style = {
   gap: 10,
 } as React.CSSProperties;
 
-type User = {
-  avatarUrl: string;
-  name: string;
-  username: string;
-}
+const Container = styled('div')(() => ({
+  display: 'flex',
+  justifyContent: 'center',
+  width: '90%',
+}));
+
+const Feed = styled('ul')(() => ({
+  borderLeft: '1px solid gray',
+}));
 
 type Post = {
   id: string;
@@ -24,13 +28,17 @@ type Post = {
   description: string;
 }
 
-const FeedPage = () => {
+type User = {
+  avatarUrl: string;
+  name: string;
+  username: string;
+}
+
+
+const Right = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [user, setUser] = useState<User>({} as User);
 
-  useEffect(() => {
-    document.title = "Feed | Xlite";
-  }, []);
 
   useEffect(() => {
     const posts: Post[] = new Array(50).fill('').map((_, index) => ({
@@ -61,27 +69,29 @@ const FeedPage = () => {
   }
 
   return (
-    <ul style={style}>
-      <CreatePost user={{
-        avatarUrl: user.avatarUrl,
-        createPostOnClick: onCreatePost,
-      }} />
-      {
-        posts.map((post) => (
-          <Post
-            key={post.id}
-            user={user!}
-            post={{
-              id: post.id,
-              createdAt: new Date('2024-05-20T16:38:06.362Z'),
-              text: post.description,
-              onRemove: () => onRemovePost(post.id),
-            }}
-          />
-        ))
-      }
-    </ul>
+    <Container>
+      <Feed style={style}>
+        <CreatePost user={{
+          avatarUrl: user.avatarUrl,
+          createPostOnClick: onCreatePost,
+        }} />
+        {
+          posts.map((post) => (
+            <Post
+              key={post.id}
+              user={user!}
+              post={{
+                id: post.id,
+                createdAt: new Date('2024-05-20T16:38:06.362Z'),
+                text: post.description,
+                onRemove: () => onRemovePost(post.id),
+              }}
+            />
+          ))
+        }
+      </Feed>
+    </Container>
   )
 }
 
-export default FeedPage;
+export default Right;

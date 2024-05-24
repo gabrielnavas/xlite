@@ -1,6 +1,6 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
-import FeedPage from "./pages/FeedPage";
+import Home from "./pages/Home";
 import Register from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 
@@ -14,7 +14,7 @@ export const routePaths = {
 
 const routes = createBrowserRouter([{
   path: routePaths.home,
-  element: <FeedPage />,
+  element: <Home />,
 }, {
   path: routePaths.auth.register,
   element: <Register />,
