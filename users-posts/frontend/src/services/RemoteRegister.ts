@@ -6,6 +6,13 @@ type RegisterResponse = {
 
 const possivelBadRequestsMessages = ['user already exists with email', 'user already exists with username']
 
+const formatMessage = (message: string) => {
+  const firstLetterUppercase = message[0].toLocaleUpperCase();
+  const restMessage = message.substring(1, message.length);
+  const messageFormatted = `${firstLetterUppercase}${restMessage}.`;
+  return messageFormatted;
+}
+
 const register = async (fullName: string, username: string, email: string, password: string, passwordConfirmation: string): Promise<RegisterResponse> => {
   const body = {
     full_name: fullName,
@@ -27,11 +34,11 @@ const register = async (fullName: string, username: string, email: string, passw
 
   if (!response.ok) {
     const data = await response.json();
-    if(data.message) {
+    if (data.message) {
       const isRegonizebleMessage = possivelBadRequestsMessages.some(message => message === data.message)
-      if(isRegonizebleMessage) {
+      if (isRegonizebleMessage) {
         return {
-          message: data.message,
+          message: formatMessage(data.message),
           success: false
         }
       }
@@ -44,7 +51,7 @@ const register = async (fullName: string, username: string, email: string, passw
 
   const data = await response.json()
   return {
-    message: 'register with success',
+    message: 'Register with success',
     success: true,
     body: {
       token: data.token,

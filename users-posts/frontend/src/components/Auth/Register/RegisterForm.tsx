@@ -1,9 +1,11 @@
-import { Button, TextField } from "@mui/material";
+import { Alert, AlertColor, Button, Snackbar, TextField } from "@mui/material";
 
 import { useFormik } from "formik";
 
 import * as Yup from 'yup';
-import register from "../../../services/register";
+import RemoteRegister from "../../../services/RemoteRegister";
+import { useState } from "react";
+import localAuthManager from "../../../services/LocalAuthManager";
 
 type RegisterForm = {
   fullName: string
@@ -13,28 +15,30 @@ type RegisterForm = {
   passwordConfirmation: string
 }
 
+const validationSchema = Yup.object<RegisterForm>({
+  fullName: Yup
+    .string()
+    .required('Full name is required')
+    .min(2, 'Full name should be of minimum 2 characters length')
+    .max(100, 'Full name should be of maximum 255 characters length'),
+  username: Yup
+    .string()
+    .required('Username is required')
+    .min(2, 'Username should be of minimum 2 characters length')
+    .max(100, 'Username should be of maximum 255 characters length'),
+  email: Yup
+    .string()
+    .email()
+    .required('Email is required')
+    .min(2, 'Email should be of minimum 2 characters length')
+    .max(100, 'Email should be of maximum 255 characters length'),
+  password: Yup.string().required('Password is required'),
+  passwordConfirmation: Yup.string()
+    .oneOf([Yup.ref('password'), ""], 'Passwords must match')
+});
+
 const RegisterForm = () => {
-  const validationSchema = Yup.object<RegisterForm>({
-    fullName: Yup
-      .string()
-      .required('Full name is required')
-      .min(2, 'Full name should be of minimum 2 characters length')
-      .max(100, 'Full name should be of maximum 255 characters length'),
-    username: Yup
-      .string()
-      .required('Username is required')
-      .min(2, 'Username should be of minimum 2 characters length')
-      .max(100, 'Username should be of maximum 255 characters length'),
-    email: Yup
-      .string()
-      .email()
-      .required('Email is required')
-      .min(2, 'Email should be of minimum 2 characters length')
-      .max(100, 'Email should be of maximum 255 characters length'),
-    password: Yup.string().required('Password is required'),
-    passwordConfirmation: Yup.string()
-      .oneOf([Yup.ref('password'), ""], 'Passwords must match')
-  });
+  const [snack, setSnack] = useState({open: false, message: '', severity: ''});
 
   const formik = useFormik({
     initialValues: {
@@ -45,29 +49,33 @@ const RegisterForm = () => {
       passwordConfirmation: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values: RegisterForm, { resetForm }) => {
+    onSubmit: async (values: RegisterForm, { resetForm }) =>  {
       console.log(values);
-      register(
-        values.fullName,
-        values.username,
-        values.email,
-        values.password,
-        values.passwordConfirmation
-      ).then((result) => {
+      
+      try {
+        const result = await RemoteRegister(
+          values.fullName,
+          values.username,
+          values.email,
+          values.password,
+          values.passwordConfirmation
+        )
         if (!result.success) {
-          // adicionar snack message
-          alert(result.message);
+          setSnack({message: result.message, open: true, severity: 'warning'})
         } else {
-          // adicionar snack message
           resetForm();
-          console.log('deu bom')
+          if(result.body) {
+            localAuthManager().setToken(result.body.token)
+            setSnack({message: result.message, open: true, severity: 'success'})
+          } else {
+            setSnack({message: 'Try again later', open: true, severity: 'warning'})
+          }
         }
-      })
-        .catch((ex) => {
-          // adicionar snack message
-          console.log(ex);
-          console.log('deu ruim')
-        })
+
+      }
+      catch(ex) {
+        setSnack({message: 'Try again later', open: true, severity: 'warning'})
+      }
     },
   });
 
@@ -143,6 +151,16 @@ const RegisterForm = () => {
         size="small">
         Sign Up
       </Button>
+
+      <Snackbar
+        open={snack.open}
+        onClose={() => setSnack({open: false, message: '', severity: ''})}
+        autoHideDuration={5000} 
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} >
+        <Alert severity={snack.severity as AlertColor} sx={{ width: '100%' }}>
+          <span style={{ fontSize:'1.1rem' }}>{snack.message}</span>
+        </Alert>
+      </Snackbar>
     </form>
   )
 }
