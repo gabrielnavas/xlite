@@ -4,6 +4,7 @@ import api.posts.models.Post;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record PostResponseDTO(
         @JsonProperty("post_id")
@@ -37,5 +38,9 @@ public record PostResponseDTO(
                 post.getOwner().getFullName(),
                 post.getOwner().getUsername()
         );
+    }
+
+    public static List<PostResponseDTO> from(List<Post> post) {
+        return post.stream().map(PostResponseDTO::from).toList();
     }
 }

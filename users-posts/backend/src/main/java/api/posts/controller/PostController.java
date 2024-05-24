@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/post")
 @AllArgsConstructor
@@ -32,5 +34,16 @@ public class PostController {
         Post post = postService.createPost(user, postDto.description());
         PostResponseDTO responseDto = PostResponseDTO.from(post);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PostResponseDTO>> getPosts(
+            @RequestHeader("Authorization") String authorization
+    ) {
+        String email = tokenService.validateTokenAndGetSubject(authorization);
+        User user = userService.findUserByEmail(email);
+        List<Post> posts = postService.getAllPostsByOwner(user);
+        List<PostResponseDTO> responseDto = PostResponseDTO.from(posts);
+        return ResponseEntity.ok().body(responseDto);
     }
 }
