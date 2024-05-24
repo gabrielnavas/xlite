@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemIcon, ListItemText, IconButton, Container } from '@mui/material';
+import { List, ListItem, ListItemIcon, ListItemText, IconButton, Container, Snackbar, Alert, AlertColor, ListItemButton } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -8,16 +8,30 @@ import PersonIcon from '@mui/icons-material/Person';
 
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import LogoutIcon from '@mui/icons-material/Logout';
+import localAuthManager from '../../services/LocalAuthManager';
+import { useNavigate } from 'react-router-dom';
+import { routePaths } from '../../Router';
+import { useState } from 'react';
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+  const [snack, setSnack] = useState({open: false, message: '', severity: ''});
+
+  const logout = () => {
+    localAuthManager().logout();
+    setSnack({message: 'Bye bye!', open: true, severity: 'success'});
+    setTimeout(() => navigate(routePaths.auth.login)
+    , 2000)
+  }
+
   const menuItems = [
-    { text: 'Home', icon: <HomeIcon /> },
-    { text: 'Explore', icon: <SearchIcon /> },
-    { text: 'Notifications', icon: <NotificationsIcon /> },
-    { text: 'Messages', icon: <MailIcon /> },
-    { text: 'Bookmarks', icon: <BookmarkIcon /> },
-    { text: 'Profile', icon: <PersonIcon /> },
-    { text: 'Logout', icon: <LogoutIcon /> },
+    { text: 'Home', icon: <HomeIcon />, onClick: () => {}},
+    { text: 'Explore', icon: <SearchIcon />, onClick: () => {} },
+    { text: 'Notifications', icon: <NotificationsIcon />, onClick: () => {} },
+    { text: 'Messages', icon: <MailIcon />, onClick: () => {} },
+    { text: 'Bookmarks', icon: <BookmarkIcon />, onClick: () => {} },
+    { text: 'Profile', icon: <PersonIcon />, onClick: () => {} },
+    { text: 'Logout', icon: <LogoutIcon />, onClick: logout },
   ];
 
   return (
@@ -42,12 +56,22 @@ const Sidebar = () => {
           </IconButton>
         </ListItem>
         {menuItems.map((item, index) => (
-          <ListItem button key={index}>
+          <ListItemButton key={index} onClick={item.onClick}>
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
-          </ListItem>
+          </ListItemButton>
         ))}
       </List>
+
+      <Snackbar
+        open={snack.open}
+        onClose={() => setSnack({open: false, message: '', severity: ''})}
+        autoHideDuration={5000} 
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} >
+        <Alert severity={snack.severity as AlertColor} sx={{ width: '100%' }}>
+          <span style={{ fontSize:'1.1rem' }}>{snack.message}</span>
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
