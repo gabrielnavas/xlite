@@ -4,6 +4,7 @@ import Dot from "./Dot";
 import Name from "./Name";
 import MenuHeader from "./MenuHeader";
 import Username from "./Username";
+import { styled } from "@mui/material";
 
 type Props = {
   name: string;
@@ -12,11 +13,15 @@ type Props = {
   openOnRemoveQuestionShield: () => void
 }
 
-const style = {
+const Container = styled('header')(() => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center'
-} as React.CSSProperties;
+}));
+
+const DataHeader = styled('span')(() => ({
+  paddingLeft: '0.5rem'
+}));
 
 const HeaderPost = ({ name, username, datePost, openOnRemoveQuestionShield }: Props) => {
   const postIsMyOwn = Math.floor(Math.random() * 2) > 0;
@@ -30,16 +35,16 @@ const HeaderPost = ({ name, username, datePost, openOnRemoveQuestionShield }: Pr
   )
 
   return (
-    <header style={style}>
-      <span>
+    <Container>
+      <DataHeader>
         <Name name={name} />
         <At />
         <Username username={username} />
         <Dot />
         <DatePost datePost={datePost} />
-      </span>
+      </DataHeader>
       {optionHeader}
-    </header>
+    </Container>
   )
 }
 

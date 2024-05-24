@@ -1,14 +1,14 @@
-import { Container, styled } from "@mui/material";
+import { styled } from "@mui/material";
 
 type Props = {
   text: string;
   onClickUpdate: () => void
 };
 
-const ContainerDescription = styled(Container)(({ theme }) => ({
+const ContainerDescription = styled('span')(({ theme }) => ({
   display: 'flex',
   minHeight: '5rem',
-  padding: '0.5rem 0.5rem 0.5rem 0',
+  padding: '0.5rem 0.5rem 0.5rem 0.5rem',
   marginTop: '0.5rem',
   cursor: 'pointer',
   transition: 'background-color 0.3s',
