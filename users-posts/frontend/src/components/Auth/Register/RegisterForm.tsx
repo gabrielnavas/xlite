@@ -1,11 +1,14 @@
+import { useState } from "react";
+
 import { Alert, AlertColor, Button, Snackbar, TextField } from "@mui/material";
 
 import { useFormik } from "formik";
-
 import * as Yup from 'yup';
+
 import RemoteRegister from "../../../services/RemoteRegister";
-import { useState } from "react";
 import localAuthManager from "../../../services/LocalAuthManager";
+import { useNavigate } from "react-router-dom";
+import { routePaths } from "../../../Router";
 
 type RegisterForm = {
   fullName: string
@@ -40,6 +43,8 @@ const validationSchema = Yup.object<RegisterForm>({
 const RegisterForm = () => {
   const [snack, setSnack] = useState({open: false, message: '', severity: ''});
 
+  const navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
       fullName: '',
@@ -61,10 +66,12 @@ const RegisterForm = () => {
         if (!result.success) {
           setSnack({message: result.message, open: true, severity: 'warning'})
         } else {
-          resetForm();
+         
           if(result.body) {
             localAuthManager().setToken(result.body.token)
             setSnack({message: result.message, open: true, severity: 'success'})
+            setTimeout(() => navigate(routePaths.home), 2000)
+            resetForm();
           } else {
             setSnack({message: 'Try again later', open: true, severity: 'warning'})
           }

@@ -6,7 +6,7 @@ import AuthPaper from "../components/Auth/AuthPaper";
 import RegisterForm from "../components/Auth/Register/RegisterForm";
 import { LockOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { routePaths } from "../routes";
+import { routePaths } from "../Router";
 
 const Page = styled(Paper)(() => ({
   display: 'flex',

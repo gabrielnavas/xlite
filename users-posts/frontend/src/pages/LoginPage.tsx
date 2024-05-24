@@ -6,7 +6,7 @@ import { LoginOutlined } from "@mui/icons-material";
 import AuthPaper from "../components/Auth/AuthPaper";
 import LoginForm from "../components/Auth/Login/LoginForm";
 import { useNavigate } from "react-router-dom";
-import { routePaths } from "../routes";
+import { routePaths } from "../Router";
 
 const Page = styled(Paper)(() => ({
   display: 'flex',

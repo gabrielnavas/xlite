@@ -3,8 +3,14 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import FeedPage from "./pages/FeedPage";
 import Register from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import { routePaths } from "./routes";
 
+export const routePaths = {
+  auth: {
+    register: "/auth/register",
+    login: "/auth/login",
+  },
+  home: "/"
+}
 
 const routes = createBrowserRouter([{
   path: routePaths.home,

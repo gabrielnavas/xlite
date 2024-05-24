@@ -7,6 +7,8 @@ import * as Yup from 'yup';
 
 import remoteLogin from "../../../services/RemoteLogin";
 import localAuthManager from "../../../services/LocalAuthManager";
+import { useNavigate } from "react-router-dom";
+import { routePaths } from "../../../Router";
 
 type LoginFormik = {
   email: string
@@ -16,10 +18,12 @@ type LoginFormik = {
 const LoginForm = () => {
   const [snack, setSnack] = useState({open: false, message: '', severity: ''});
 
+  const navigate = useNavigate();
+
   const validationSchema = Yup.object<LoginFormik>({
     email: Yup
       .string()
-      // .email()
+      .email()
       .required('Email is required'),
     password: Yup.string().required('Password is required'),
   });
@@ -40,6 +44,7 @@ const LoginForm = () => {
           if(result.body) {
             localAuthManager().setToken(result.body.token)
             setSnack({message: result.message, open: true, severity: 'success'})
+            setTimeout(() => navigate(routePaths.home), 2000)
             resetForm();
           } else {
             setSnack({message: 'Try again later', open: true, severity: 'warning'})
