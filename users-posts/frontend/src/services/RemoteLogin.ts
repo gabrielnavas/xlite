@@ -4,7 +4,7 @@ type RegisterResponse = {
   body?: { token: string }
 };
 
-const possivelBadRequestsMessages = ['user already exists with email', 'user already exists with username']
+const possivelBadRequestsMessages = ['email or password is incorrect',]
 
 const formatMessage = (message: string) => {
   const firstLetterUppercase = message[0].toLocaleUpperCase();
@@ -13,16 +13,13 @@ const formatMessage = (message: string) => {
   return messageFormatted;
 }
 
-const remoteRegister = async (fullName: string, username: string, email: string, password: string, passwordConfirmation: string): Promise<RegisterResponse> => {
+const remoteLogin = async (email: string, password: string): Promise<RegisterResponse> => {
   const body = {
-    full_name: fullName,
-    username: username,
     email: email,
     password: password,
-    password_confirmation: passwordConfirmation
   }
 
-  const url = `${import.meta.env.VITE_ENDPOINT_API}/auth/register`
+  const url = `${import.meta.env.VITE_ENDPOINT_API}/auth/login`
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -51,7 +48,7 @@ const remoteRegister = async (fullName: string, username: string, email: string,
 
   const data = await response.json()
   return {
-    message: 'Register with success',
+    message: 'Login with success',
     success: true,
     body: {
       token: data.token,
@@ -59,4 +56,4 @@ const remoteRegister = async (fullName: string, username: string, email: string,
   }
 }
 
-export default remoteRegister;
+export default remoteLogin;

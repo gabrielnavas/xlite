@@ -1,49 +1,70 @@
-import { Button, TextField } from "@mui/material";
+import { Alert, AlertColor, Button, Snackbar, TextField } from "@mui/material";
 
 import { useFormik } from "formik";
+import { useState } from "react";
 
 import * as Yup from 'yup';
 
-type RegisterForm = {
-  username: string
+import remoteLogin from "../../../services/RemoteLogin";
+import localAuthManager from "../../../services/LocalAuthManager";
+
+type LoginFormik = {
+  email: string
   password: string
 }
 
 const LoginForm = () => {
-  const validationSchema = Yup.object<RegisterForm>({
-    username: Yup
+  const [snack, setSnack] = useState({open: false, message: '', severity: ''});
+
+  const validationSchema = Yup.object<LoginFormik>({
+    email: Yup
       .string()
-      .required('Username is required')
-      .min(2, 'Username should be of minimum 2 characters length')
-      .max(100, 'Username should be of maximum 255 characters length'),
+      // .email()
+      .required('Email is required'),
     password: Yup.string().required('Password is required'),
   });
 
   const formik = useFormik({
     initialValues: {
-      username: '',
+      email: '',
       password: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values: RegisterForm, { resetForm }) => {
-      console.log(values);
-      resetForm();
-    },
+    onSubmit: async (values: LoginFormik, { resetForm }) => {
+      console.log(values)
+      try {
+        const result = await remoteLogin(values.email, values.password)
+        if (!result.success) {
+          setSnack({message: result.message, open: true, severity: 'warning'})
+        } else {
+          if(result.body) {
+            localAuthManager().setToken(result.body.token)
+            setSnack({message: result.message, open: true, severity: 'success'})
+            resetForm();
+          } else {
+            setSnack({message: 'Try again later', open: true, severity: 'warning'})
+          }
+        }
+      }
+      catch(ex) {
+        setSnack({message: 'Try again later', open: true, severity: 'warning'})
+      }
+    }
   });
 
   return (
     <form onSubmit={formik.handleSubmit}>
       <TextField
         fullWidth
-        id="username"
-        name="username"
-        label="Username"
+        id="email"
+        name="email"
+        label="E-mail"
         margin="normal"
-        value={formik.values.username}
+        value={formik.values.email}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        error={formik.touched.username && Boolean(formik.errors.username)}
-        helperText={formik.touched.username && formik.errors.username}
+        error={formik.touched.email && Boolean(formik.errors.email)}
+        helperText={formik.touched.email && formik.errors.email}
       />
       <TextField
         fullWidth
@@ -66,6 +87,16 @@ const LoginForm = () => {
         size="small">
         Sign In
       </Button>
+
+      <Snackbar
+        open={snack.open}
+        onClose={() => setSnack({open: false, message: '', severity: ''})}
+        autoHideDuration={5000} 
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} >
+        <Alert severity={snack.severity as AlertColor} sx={{ width: '100%' }}>
+          <span style={{ fontSize:'1.1rem' }}>{snack.message}</span>
+        </Alert>
+      </Snackbar>
     </form>
   )
 }

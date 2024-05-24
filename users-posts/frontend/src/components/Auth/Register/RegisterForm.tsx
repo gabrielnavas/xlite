@@ -50,8 +50,6 @@ const RegisterForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values: RegisterForm, { resetForm }) =>  {
-      console.log(values);
-      
       try {
         const result = await RemoteRegister(
           values.fullName,
@@ -71,7 +69,6 @@ const RegisterForm = () => {
             setSnack({message: 'Try again later', open: true, severity: 'warning'})
           }
         }
-
       }
       catch(ex) {
         setSnack({message: 'Try again later', open: true, severity: 'warning'})
