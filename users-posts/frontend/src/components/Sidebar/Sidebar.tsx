@@ -38,6 +38,7 @@ const Sidebar = () => {
         <ListItem>
           <IconButton>
             <AcUnitIcon color="primary" />
+            <span style={{  marginLeft: '0.5rem', color: '#1DA1F2B9'}}>xlite</span>
           </IconButton>
         </ListItem>
         {menuItems.map((item, index) => (
