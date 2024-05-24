@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -55,6 +56,7 @@ public class RegisterUserServiceImpl implements RegisterUserService {
         newUser.setEmail(email);
         newUser.setFullName(fullName);
         newUser.setUsername(username);
+        newUser.setCreatedAt(LocalDateTime.now());
         newUser.setRoles(new HashSet<>(Collections.singletonList(Role.USER)));
 
         return newUser;
