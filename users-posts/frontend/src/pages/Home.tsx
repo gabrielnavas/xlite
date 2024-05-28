@@ -5,8 +5,11 @@ import Left from "../components/Home/Left";
 import Right from "../components/Home/Right";
 
 
-const Page = styled(Container)(() => ({
+const Page = styled(Container)(({theme}) => ({
   display: 'flex',
+  [theme.breakpoints.between('xs', 'sm')]: {
+    padding: 0
+  },
 }));
 
 
