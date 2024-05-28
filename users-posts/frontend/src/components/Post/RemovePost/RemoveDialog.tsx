@@ -22,8 +22,8 @@ const RemoveDialog = ({ onClickOpen, open, onClickClose, onClickRemove }: Props)
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClickClose}>Cancel</Button>
-        <Button onClick={onClickRemove} autoFocus>
+        <Button size="small" onClick={onClickClose}>Cancel</Button>
+        <Button size="small"onClick={onClickRemove} autoFocus>
           Remove
         </Button>
       </DialogActions>

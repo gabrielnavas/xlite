@@ -16,6 +16,9 @@ const ContainerDescription = styled('span')(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
   },
   borderRadius: '0.5rem',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '0.9rem',
+  },
 }));
 
 const Description = styled('span')(() => ({

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Paper } from "@mui/material";
+import { Paper, styled } from "@mui/material";
 
 import LeftSide from "./LeftSide/LeftSide";
 import RightSide from "./RightSide/RightSide";
@@ -20,12 +20,19 @@ type Props = {
   },
 }
 
-const style = {
+const Container = styled(Paper)(({ theme }) => ({
   display: 'flex',
   minHeight: '5rem',
   width: '35rem',
   padding: '1rem 1rem 1rem 0.25rem',
-} as React.CSSProperties;
+  [theme.breakpoints.down('md')]: {
+    width: '32rem',
+  },
+  [theme.breakpoints.between('xs', 'sm')]: {
+    width: '21rem',
+  },
+}));
+
 
 const Post = ({ user, post }: Props) => {
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
@@ -41,7 +48,7 @@ const Post = ({ user, post }: Props) => {
   }
 
   return (
-    <Paper sx={style} >
+    <Container>
       <LeftSide
         avatarUrl={user.avatarUrl}
       />
@@ -68,7 +75,7 @@ const Post = ({ user, post }: Props) => {
         onClickOpen={() => setRemoveShieldOpen(true)}
         open={removeShieldOpen}
       />
-    </Paper>
+    </Container>
   )
 }
 

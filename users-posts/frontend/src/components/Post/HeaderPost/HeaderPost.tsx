@@ -19,8 +19,14 @@ const Container = styled('header')(() => ({
   alignItems: 'center'
 }));
 
-const DataHeader = styled('span')(() => ({
-  paddingLeft: '0.5rem'
+const DataHeader = styled('span')(({theme}) => ({
+  paddingLeft: '0.5rem',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '0.8rem',
+  },
+  [theme.breakpoints.between('xs', 'sm')]: {
+    fontSize: '0.75rem',
+  },
 }));
 
 const HeaderPost = ({ name, username, datePost, openOnRemoveQuestionShield }: Props) => {

@@ -1,5 +1,21 @@
+import { styled } from "@mui/material";
 import HeaderPost from "../HeaderPost/HeaderPost";
 import PostDescription from "./PostDescription";
+
+
+
+const Container = styled('section')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  width: '100%',
+  [theme.breakpoints.down('md')]: {
+    width: '32rem',
+  },
+  [theme.breakpoints.between('xs', 'sm')]: {
+    width: '15.2rem',
+  },
+}));
+
 
 type Props = {
   user: {
@@ -14,15 +30,9 @@ type Props = {
   }
 }
 
-const style = {
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%',
-} as React.CSSProperties;
-
 const RightSide = ({ post, user }: Props) => {
   return (
-    <section style={style} >
+    <Container>
       <HeaderPost
         datePost={post.createdAt}
         name={user.name}
@@ -30,7 +40,7 @@ const RightSide = ({ post, user }: Props) => {
         openOnRemoveQuestionShield={post.openOnRemoveQuestionShield}
       />
       <PostDescription text={post.text} onClickUpdate={post.onClickUpdate} />
-    </section>
+    </Container>
   )
 }
 
