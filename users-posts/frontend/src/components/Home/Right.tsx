@@ -20,7 +20,6 @@ const Page = styled('div')(({ theme }) => ({
 const Feed = styled('ul')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'center',
   position: 'relative',
   width: '75%',
   gap: 10,

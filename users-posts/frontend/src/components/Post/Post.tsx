@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Paper, styled } from "@mui/material";
 
 import LeftSide from "./LeftSide/LeftSide";
 import RightSide from "./RightSide/RightSide";
 import ModalUpdate from "./ModalUpdate/ModalUpdate";
 import RemoveDialog from "./RemovePost/RemoveDialog";
+import PostBase from "./PostBase";
 
 type Props = {
   user: {
@@ -19,19 +19,6 @@ type Props = {
     onRemove: (postId: string) => void
   },
 }
-
-const Container = styled(Paper)(({ theme }) => ({
-  display: 'flex',
-  minHeight: '5rem',
-  width: '35rem',
-  padding: '1rem 1rem 1rem 0.25rem',
-  [theme.breakpoints.down('md')]: {
-    width: '32rem',
-  },
-  [theme.breakpoints.between('xs', 'sm')]: {
-    width: '21rem',
-  },
-}));
 
 
 const Post = ({ user, post }: Props) => {
@@ -48,7 +35,7 @@ const Post = ({ user, post }: Props) => {
   }
 
   return (
-    <Container>
+    <PostBase>
       <LeftSide
         avatarUrl={user.avatarUrl}
       />
@@ -75,7 +62,7 @@ const Post = ({ user, post }: Props) => {
         onClickOpen={() => setRemoveShieldOpen(true)}
         open={removeShieldOpen}
       />
-    </Container>
+    </PostBase>
   )
 }
 

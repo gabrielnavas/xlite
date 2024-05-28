@@ -1,14 +1,14 @@
-import { Paper, styled } from "@mui/material"
+import { Box, styled } from "@mui/material"
 
 import PostAddIcon from '@mui/icons-material/PostAdd';
+import PostBase from "./PostBase";
 
-const Container = styled(Paper)(() => ({
+const MessageContainer = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   minHeight: '5rem',
-  width: '35rem',
-  padding: '1rem 1rem 1rem 0.25rem',
+  width: '100%',
 }));
 
 const Message = styled('span')(() => ({
@@ -24,10 +24,12 @@ type Props = {
 
 const PostMessage = ({ message }: Props) => {
   return (
-    <Container>
-      <PostAddIcon color="primary"  />
-      <Message>{message}</Message>
-    </Container>
+    <PostBase>
+      <MessageContainer>
+        <PostAddIcon color="primary" />
+        <Message>{message}</Message>
+      </MessageContainer>
+    </PostBase>
   )
 }
 
