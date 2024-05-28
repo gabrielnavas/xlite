@@ -7,6 +7,7 @@ import AuthPaper from "../components/Auth/AuthPaper";
 import LoginForm from "../components/Auth/Login/LoginForm";
 import { useNavigate } from "react-router-dom";
 import { routePaths } from "../Router";
+import localAuthManager from "../services/LocalAuthManager";
 
 const Page = styled(Paper)(() => ({
   display: 'flex',
@@ -29,6 +30,13 @@ const LoginPage = () => {
   useEffect(() => {
     document.title = "Login | Xlite";
   }, []);
+
+  useEffect(() => {
+    const authManager = localAuthManager()
+    if(authManager.isAuth()) {
+      navigate(routePaths.home)
+    }
+  }, [navigate]);
 
   const bottomArea = (
     <Typography variant="h1" component="h2">

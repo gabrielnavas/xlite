@@ -16,8 +16,13 @@ const logout = () => {
   localStorage.clear();
 }
 
+const isAuth = (): boolean => {
+  const token = localStorage.getItem(JWT_KEY)
+  return token !== null;
+}
+
 const localAuthManager = () => {
-  return { setToken, logout, getToken }
+  return { setToken, logout, getToken, isAuth }
 }
 
 

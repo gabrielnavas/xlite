@@ -7,6 +7,7 @@ import RegisterForm from "../components/Auth/Register/RegisterForm";
 import { LockOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { routePaths } from "../Router";
+import localAuthManager from "../services/LocalAuthManager";
 
 const Page = styled(Paper)(() => ({
   display: 'flex',
@@ -29,6 +30,13 @@ const Register = () => {
   useEffect(() => {
     document.title = "Register | Xlite";
   }, []);
+
+  useEffect(() => {
+    const authManager = localAuthManager()
+    if(authManager.isAuth()) {
+      navigate(routePaths.home)
+    }
+  }, [navigate]);
 
   const bottomArea = (
     <Typography variant="h1" component="h2">
