@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import { Button, Paper, Typography, styled } from "@mui/material";
-import { LoginOutlined } from "@mui/icons-material";
+import LoginIcon from "@mui/icons-material/Login";
 
 import AuthPaper from "../components/Auth/AuthPaper";
 import LoginForm from "../components/Auth/Login/LoginForm";
@@ -15,6 +15,13 @@ const Page = styled(Paper)(() => ({
   alignItems: 'center',
   backgroundColor: 'black',
 }));
+
+const Icon = styled(LoginIcon)(() => ({
+  color: '#999',
+  fontWeight: 'bold',
+  fontSize: '2.8rem'
+}));
+
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -35,7 +42,7 @@ const LoginPage = () => {
     <Page>
       <AuthPaper 
         title="Login" 
-        icon={<LoginOutlined />} 
+        icon={<Icon />} 
         bottomArea={bottomArea}>
         <LoginForm />
       </AuthPaper>

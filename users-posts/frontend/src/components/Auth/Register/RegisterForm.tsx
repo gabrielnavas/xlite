@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Alert, AlertColor, Button, Snackbar, TextField } from "@mui/material";
+import { Alert, AlertColor, Button, Snackbar, TextField, useMediaQuery } from "@mui/material";
 
 import { useFormik } from "formik";
 import * as Yup from 'yup';
@@ -41,7 +41,9 @@ const validationSchema = Yup.object<RegisterForm>({
 });
 
 const RegisterForm = () => {
-  const [snack, setSnack] = useState({open: false, message: '', severity: ''});
+  const [snack, setSnack] = useState({ open: false, message: '', severity: '' });
+
+  const xs = useMediaQuery('(max-width:600px)');
 
   const navigate = useNavigate();
 
@@ -54,7 +56,7 @@ const RegisterForm = () => {
       passwordConfirmation: '',
     },
     validationSchema: validationSchema,
-    onSubmit: async (values: RegisterForm, { resetForm }) =>  {
+    onSubmit: async (values: RegisterForm, { resetForm }) => {
       try {
         const result = await RemoteRegister(
           values.fullName,
@@ -64,21 +66,21 @@ const RegisterForm = () => {
           values.passwordConfirmation
         )
         if (!result.success) {
-          setSnack({message: result.message, open: true, severity: 'warning'})
+          setSnack({ message: result.message, open: true, severity: 'warning' })
         } else {
-         
-          if(result.body) {
+
+          if (result.body) {
             localAuthManager().setToken(result.body.token)
-            setSnack({message: result.message, open: true, severity: 'success'})
+            setSnack({ message: result.message, open: true, severity: 'success' })
             setTimeout(() => navigate(routePaths.home), 2000)
             resetForm();
           } else {
-            setSnack({message: 'Try again later', open: true, severity: 'warning'})
+            setSnack({ message: 'Try again later', open: true, severity: 'warning' })
           }
         }
       }
-      catch(ex) {
-        setSnack({message: 'Try again later', open: true, severity: 'warning'})
+      catch (ex) {
+        setSnack({ message: 'Try again later', open: true, severity: 'warning' })
       }
     },
   });
@@ -96,6 +98,7 @@ const RegisterForm = () => {
         onBlur={formik.handleBlur}
         error={formik.touched.fullName && Boolean(formik.errors.fullName)}
         helperText={formik.touched.fullName && formik.errors.fullName}
+        size={xs ? 'small' : 'medium'}
       />
       <TextField
         fullWidth
@@ -108,6 +111,7 @@ const RegisterForm = () => {
         onBlur={formik.handleBlur}
         error={formik.touched.username && Boolean(formik.errors.username)}
         helperText={formik.touched.username && formik.errors.username}
+        size={xs ? 'small' : 'medium'}
       />
       <TextField
         fullWidth
@@ -120,6 +124,7 @@ const RegisterForm = () => {
         onBlur={formik.handleBlur}
         error={formik.touched.email && Boolean(formik.errors.email)}
         helperText={formik.touched.email && formik.errors.email}
+        size={xs ? 'small' : 'medium'}
       />
       <TextField
         fullWidth
@@ -133,6 +138,7 @@ const RegisterForm = () => {
         onBlur={formik.handleBlur}
         error={formik.touched.password && Boolean(formik.errors.password)}
         helperText={formik.touched.password && formik.errors.password}
+        size={xs ? 'small' : 'medium'}
       />
       <TextField
         fullWidth
@@ -146,23 +152,24 @@ const RegisterForm = () => {
         onBlur={formik.handleBlur}
         error={formik.touched.passwordConfirmation && Boolean(formik.errors.passwordConfirmation)}
         helperText={formik.touched.passwordConfirmation && formik.errors.passwordConfirmation}
+        size={xs ? 'small' : 'medium'}
       />
       <Button
         color="primary"
         variant="contained"
         fullWidth
         type="submit"
-        size="small">
+        size={xs ? 'small' : 'medium'}>
         Sign Up
       </Button>
 
       <Snackbar
         open={snack.open}
-        onClose={() => setSnack({open: false, message: '', severity: ''})}
-        autoHideDuration={5000} 
+        onClose={() => setSnack({ open: false, message: '', severity: '' })}
+        autoHideDuration={5000}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }} >
         <Alert severity={snack.severity as AlertColor} sx={{ width: '100%' }}>
-          <span style={{ fontSize:'1.1rem' }}>{snack.message}</span>
+          <span style={{ fontSize: '1.1rem' }}>{snack.message}</span>
         </Alert>
       </Snackbar>
     </form>

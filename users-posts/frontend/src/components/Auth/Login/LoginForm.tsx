@@ -1,4 +1,4 @@
-import { Alert, AlertColor, Button, Snackbar, TextField } from "@mui/material";
+import { Alert, AlertColor, Button, Snackbar, TextField, useMediaQuery } from "@mui/material";
 
 import { useFormik } from "formik";
 import { useState } from "react";
@@ -20,6 +20,8 @@ const LoginForm = () => {
 
   const navigate = useNavigate();
 
+  const xs = useMediaQuery('(max-width:600px)');
+
   const validationSchema = Yup.object<LoginFormik>({
     email: Yup
       .string()
@@ -35,7 +37,6 @@ const LoginForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values: LoginFormik, { resetForm }) => {
-      console.log(values)
       try {
         const result = await remoteLogin(values.email, values.password)
         if (!result.success) {
@@ -70,6 +71,7 @@ const LoginForm = () => {
         onBlur={formik.handleBlur}
         error={formik.touched.email && Boolean(formik.errors.email)}
         helperText={formik.touched.email && formik.errors.email}
+        size={xs ? 'small' : 'medium'}
       />
       <TextField
         fullWidth
@@ -83,13 +85,14 @@ const LoginForm = () => {
         onBlur={formik.handleBlur}
         error={formik.touched.password && Boolean(formik.errors.password)}
         helperText={formik.touched.password && formik.errors.password}
+        size={xs ? 'small' : 'medium'}
       />
       <Button
         color="primary"
         variant="contained"
         fullWidth
         type="submit"
-        size="small">
+        size={xs ? 'small' : 'medium'}>
         Sign In
       </Button>
 

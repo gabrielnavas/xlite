@@ -16,6 +16,13 @@ const Page = styled(Paper)(() => ({
   backgroundColor: 'black',
 }));
 
+const Icon = styled(LockOutlined)(() => ({
+  color: '#999',
+  fontWeight: 'bold',
+  fontSize: '2.8rem'
+}));
+
+
 const Register = () => {
   const navigate = useNavigate();
 
@@ -35,7 +42,7 @@ const Register = () => {
     <Page>
       <AuthPaper
         title="Register"
-        icon={<LockOutlined />}
+        icon={<Icon />}
         bottomArea={bottomArea} >
         <RegisterForm />
       </AuthPaper>
