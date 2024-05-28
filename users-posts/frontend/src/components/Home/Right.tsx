@@ -10,7 +10,10 @@ const Page = styled('div')(({ theme }) => ({
   justifyContent: 'center',
   width: '85%',
   [theme.breakpoints.down('md')]: {
-    width: '100%',
+    width: '92%',
+  },
+  [theme.breakpoints.between('xs', 'sm')]: {
+    width: '97%',
   },
 }));
 

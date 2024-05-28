@@ -1,7 +1,6 @@
 import {
-  List, ListItem, ListItemIcon, ListItemText,
-  IconButton, Snackbar, Alert, AlertColor, ListItemButton,
-  useMediaQuery
+  List, ListItemIcon, ListItemText,
+  IconButton, Snackbar, Alert, AlertColor, ListItemButton, useMediaQuery
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
@@ -57,8 +56,6 @@ const MenuSideList = () => {
             </ListItemButton>
           )
         }
-        <ListItem sx={{ display: 'flex', justifyContent: 'center' }}>
-        </ListItem>
         {menuItems.map((item, index) => (
           <ListItemButton key={index} onClick={item.onClick}>
             <ListItemIcon>{item.icon}</ListItemIcon>

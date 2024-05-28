@@ -7,6 +7,10 @@ const Container = styled('div')(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     width: '8%',
   },
+  [theme.breakpoints.between('xs', 'sm')]: {
+    width: '3%',
+    paddingRight: '20px'
+  },
 }));
 
 const Left = () => {
