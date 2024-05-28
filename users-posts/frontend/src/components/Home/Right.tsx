@@ -5,23 +5,27 @@ import PostComponent from "../Post/Post";
 import remotePost from "../../services/RemotePost";
 import PostMessage from "../Post/PostMessage";
 
-const style = {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'start',
-  alignItems: 'center',
-  width: '100%',
-  gap: 10,
-} as React.CSSProperties;
-
-const Container = styled('div')(() => ({
+const Page = styled('div')(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
-  width: '90%',
+  width: '85%',
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+  },
 }));
 
-const Feed = styled('ul')(() => ({
+const Feed = styled('ul')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  position: 'relative',
+  width: '75%',
+  gap: 10,
   borderLeft: '1px solid gray',
+  [theme.breakpoints.down('md')]: {
+    borderLeft: 'none',
+    width: '100%',
+  },
 }));
 
 type Post = {
@@ -86,33 +90,33 @@ const Right = () => {
     setPosts(posts.filter(post => post.id !== postId));
   }
 
+  const postsOrEmptyMessage = posts.length === 0 ? (
+    <PostMessage message="Start with post..." />
+  ) : (
+    posts.map((post) => (
+      <PostComponent
+        key={post.id}
+        user={user!}
+        post={{
+          id: post.id,
+          createdAt: post.createdAt,
+          text: post.description,
+          onRemove: () => onRemovePost(post.id),
+        }}
+      />
+    ))
+  )
+
   return (
-    <Container>
-      <Feed style={style}>
+    <Page>
+      <Feed>
         <CreatePost user={{
           avatarUrl: user.avatarUrl,
           createPostOnClick: onCreatePost,
         }} />
-        {
-          posts.length === 0 ? (
-            <PostMessage message="Start with post..." />
-          ) : (
-            posts.map((post) => (
-              <PostComponent
-                key={post.id}
-                user={user!}
-                post={{
-                  id: post.id,
-                  createdAt: post.createdAt,
-                  text: post.description,
-                  onRemove: () => onRemovePost(post.id),
-                }}
-              />
-            ))
-          )
-        }
+        { postsOrEmptyMessage }
       </Feed>
-    </Container>
+    </Page>
   )
 }
 

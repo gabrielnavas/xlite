@@ -1,9 +1,12 @@
 import { styled } from "@mui/material";
 import Sidebar from "../Sidebar/Sidebar";
 
-const Container = styled('div')(() => ({
-  width: '20%',
-  position: 'relative'
+const Container = styled('div')(({ theme }) => ({
+  width: '15%',
+  position: 'relative',
+  [theme.breakpoints.down('md')]: {
+    width: '8%',
+  },
 }));
 
 const Left = () => {
