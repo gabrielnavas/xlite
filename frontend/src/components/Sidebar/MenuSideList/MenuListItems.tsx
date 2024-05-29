@@ -9,11 +9,11 @@ import BookmarkIcon from '@mui/icons-material/Bookmark'
 import PersonIcon from '@mui/icons-material/Person'
 import LogoutIcon from '@mui/icons-material/Logout'
 
-import localAuthManager from "../../services/LocalAuthManager"
-import { routePaths } from "../../Router"
 
 import SnackBarMessage, { SnackProps } from "./SnackBarMessage"
 import MenuListItem from "./MenuListItem"
+import localAuthManager from "../../../services/LocalAuthManager"
+import { routePaths } from "../../../Router"
 
 const MenuListItems = () => {
   const [snack, setSnack] = useState<SnackProps>({} as SnackProps)

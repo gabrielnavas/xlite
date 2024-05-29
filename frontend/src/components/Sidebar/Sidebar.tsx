@@ -1,5 +1,5 @@
 import { Container, styled } from '@mui/material';
-import MenuSideList from '../MenuSideList/MenuSideList';
+import MenuSideList from './MenuSideList/MenuSideList';
 
 const ContainerCustom = styled(Container)(() => ({
   width: 240,
