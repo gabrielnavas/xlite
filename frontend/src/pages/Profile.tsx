@@ -4,7 +4,7 @@ import { Container, styled } from "@mui/material";
 import Left from "../components/Home/Left";
 import Right from "../components/Home/Right";
 import localAuthManager from "../services/LocalAuthManager";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { routePaths } from "../Router";
 
 
@@ -18,7 +18,10 @@ const Page = styled(Container)(({theme}) => ({
 
 const Profile = () => {
   const navigate = useNavigate()
-  
+  const params = useParams<{username: string}>();
+
+  console.log(params)
+
   useEffect(() => {
     document.title = "Feed | Xlite";
   }, []);

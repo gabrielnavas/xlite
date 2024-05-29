@@ -73,7 +73,7 @@ const createPost = async (description: string): Promise<PostResponse<Post>> => {
 }
 
 
-const getAllPosts = async (): Promise<PostResponse<Post[]>> => {
+const getAllMyPosts = async (): Promise<PostResponse<Post[]>> => {
   const token = localAuthManager().getToken(); 
 
   const url = `${import.meta.env.VITE_ENDPOINT_API}/post`
@@ -112,7 +112,7 @@ const getAllPosts = async (): Promise<PostResponse<Post[]>> => {
 }
 
 const remotePost = () => {
-  return { createPost, getAllPosts }
+  return { createPost, getAllMyPosts }
 }
 
 export default remotePost

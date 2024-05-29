@@ -64,7 +64,7 @@ const Right = () => {
 
   useEffect(() => {
     const inTimeLine = (postId: string) => posts.find(p => p.id === postId);
-    remotePost().getAllPosts().then(result => {
+    remotePost().getAllMyPosts().then(result => {
       if (result.body) {
         const newPosts = result.body.filter(post => !inTimeLine(post.id))
         setPosts([...newPosts, ...posts])
