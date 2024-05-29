@@ -19,15 +19,10 @@ public class UserController {
     private final UserService userService;
     private final TokenService tokenService;
 
-    @GetMapping
+    @GetMapping("/logged")
     public ResponseEntity<User> getUser(@RequestHeader("Authorization") String jwt) {
         String email = tokenService.validateTokenAndGetSubject(jwt);
         User user = userService.findUserByEmail(email);
-
-        boolean isAdmin = user.getRoles().stream().anyMatch(role -> role.equals(Role.ADMIN));
-        if (isAdmin) {
-            throw new RuntimeException("you cant have this user");
-        }
 
         return ResponseEntity.ok(user);
     }
