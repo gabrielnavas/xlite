@@ -27,7 +27,6 @@ const Home = () => {
     if(!localAuthManager().isAuth()) {
       navigate(routePaths.auth.login)
     }
-    document.title = "Feed | Xlite";
   }, [navigate]);
 
   return (
