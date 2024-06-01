@@ -35,7 +35,7 @@ const CreatePostRightSide = ({createPostOnClick}: Props) => {
       <TextField
         fullWidth
         multiline
-        rows={3}
+        minRows={3}
         maxRows={10}
         id="description"
         name="description"
