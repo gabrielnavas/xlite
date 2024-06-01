@@ -1,7 +1,7 @@
 import { Theme } from "@emotion/react";
 import { Box, Button, TextField } from "@mui/material";
 
-import { Data, UpdateForm } from "./ModalUpdate";
+import { Data, UpdateForm } from "./types";
 
 import { useFormik } from "formik";
 import * as yup from 'yup';
@@ -34,7 +34,7 @@ type Props = {
   onFinishUpdate: (data: UpdateForm) => void;
 }
 
-const BoxInside = ({ data, onFinishUpdate }: Props) => {
+const Form = ({ data, onFinishUpdate }: Props) => {
   const formik = useFormik({
     initialValues: {
       description: data.post.text,
@@ -71,4 +71,4 @@ const BoxInside = ({ data, onFinishUpdate }: Props) => {
 }
 
 
-export default BoxInside;
+export default Form;

@@ -11,7 +11,7 @@ type Props = {
 
 const CreatePost = ({ user }: Props) => {
   return (
-    <PostBase >
+    <PostBase>
       <LeftSide avatarUrl={user.avatarUrl} />
       <CreatePostRightSide createPostOnClick={user.createPostOnClick} />
     </PostBase>

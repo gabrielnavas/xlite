@@ -1,11 +1,15 @@
-import { Paper, styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 
+type Props = {
+  children: React.ReactNode
+}
 
-const Container = styled(Paper)(({ theme }) => ({
+const PostContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   minHeight: '5rem',
   width: '35rem',
   padding: '1rem 1rem 1rem 0.25rem',
+  background: '#15202B',
   [theme.breakpoints.down('md')]: {
     width: '32rem',
   },
@@ -20,14 +24,12 @@ const Container = styled(Paper)(({ theme }) => ({
   },
 }));
 
-type Props = {
-  children: React.ReactNode
-}
-
 const PostBase = ({ children }: Props) => {
   return (
-    <Container>{children}</Container>
+    <PostContainer>
+      {children}
+    </PostContainer>
   )
 }
 
-export default PostBase;
+export default PostBase

@@ -1,21 +1,7 @@
 import { Modal } from "@mui/material";
-import BoxInside from "./BoxInside";
 
-export type UpdateForm = {
-  description: string;
-}
-
-export type Data = {
-  user: {
-    avatarUrl: string
-    name: string;
-    username: string;
-  },
-  post: {
-    text: string;
-    createdAt: Date;
-  }
-}
+import { Data, UpdateForm } from "./types";
+import ModalContent from "./ModalContent";
 
 type Props = {
   open: boolean
@@ -32,7 +18,7 @@ const ModalUpdate = ({ open, onClose, data, onFinishUpdate }: Props) => {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <BoxInside 
+      <ModalContent
         data={data}
         onFinishUpdate={onFinishUpdate}
       />

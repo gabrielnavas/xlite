@@ -76,10 +76,21 @@ const Right = () => {
 
   const inTimeLine = useCallback((postId: string) => posts.find(p => p.id === postId), []);
 
-  const addNewsPosts = useCallback((posts: Post[]) => {
+  const loadNewsPosts = useCallback((posts: Post[]) => {
     const newPosts = posts.filter(post => !inTimeLine(post.id))
     setPosts([...newPosts, ...posts])
   }, [inTimeLine])
+
+  const addNewPost = useCallback((newPost: Post) => {
+    loadNewsPosts([newPost, ...posts])
+    setPosts([newPost, ...posts])
+    setSnack({
+      message: "Your litweet is posted",
+      open: true,
+      severity: 'success' as AlertColor,
+      position: { horizontal: 'center', vertical: 'bottom' }
+    })
+  }, [loadNewsPosts, posts])
 
   useEffect(() => {
     setUser({
@@ -96,10 +107,10 @@ const Right = () => {
         return
       }
       if (result.body) {
-        addNewsPosts(result.body)
+        loadNewsPosts(result.body)
       }
     })
-  }, [addNewsPosts, logout]);
+  }, [loadNewsPosts, logout]);
 
   const onCreatePost = async (description: string) => {
     try {
@@ -109,14 +120,8 @@ const Right = () => {
         setSnack({ message: "Try again later", open: true, severity: 'error' as AlertColor, position: { horizontal: 'center', vertical: 'bottom' } })
       } else {
         if (result.body) {
-          const newPost: Post = result.body
-          setPosts([newPost, ...posts])
-          setSnack({
-            message: "Your litweet is posted",
-            open: true,
-            severity: 'success' as AlertColor,
-            position: { horizontal: 'center', vertical: 'bottom' }
-          })
+          addNewPost(result.body)
+
         }
       }
     } catch (ex) {
@@ -133,9 +138,9 @@ const Right = () => {
   const postsOrEmptyMessage = posts.length === 0 ? (
     <PostMessage message="Start with post..." />
   ) : (
-    posts.map((post) => (
+    posts.map((post, index) => (
       <PostComponent
-        key={post.id}
+        key={`${post.id}${index}`}
         user={user!}
         post={{
           id: post.id,
@@ -156,7 +161,6 @@ const Right = () => {
         }} />
         {postsOrEmptyMessage}
       </Feed>
-
 
       <Snackbar
         open={snack.open}
