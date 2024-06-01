@@ -8,7 +8,7 @@ import { routePaths } from "../../Router";
 import { useNavigate } from "react-router-dom";
 import localAuthManager from "../../services/LocalAuthManager";
 
-const Page = styled('div')(({ theme }) => ({
+const Container = styled('div')(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   width: '85%',
@@ -153,7 +153,7 @@ const Right = () => {
   )
 
   return (
-    <Page>
+    <Container>
       <Feed>
         <CreatePost user={{
           avatarUrl: user.avatarUrl,
@@ -171,7 +171,7 @@ const Right = () => {
           <span style={{ fontSize: '1.1rem' }}>{snack.message}</span>
         </Alert>
       </Snackbar>
-    </Page>
+    </Container>
   )
 }
 
