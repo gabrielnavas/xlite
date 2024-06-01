@@ -1,9 +1,12 @@
-import { styled } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Alert, AlertColor, Snackbar, styled } from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
 import CreatePost from "../Post/CreatePost/CreatePost";
 import PostComponent from "../Post/Post";
 import remotePost from "../../services/RemotePost";
 import PostMessage from "../Post/PostMessage";
+import { routePaths } from "../../Router";
+import { useNavigate } from "react-router-dom";
+import localAuthManager from "../../services/LocalAuthManager";
 
 const Page = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -50,9 +53,27 @@ type User = {
 
 
 const Right = () => {
+  const [snack, setSnack] = useState({ open: false, message: '', severity: '' });
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [user, setUser] = useState<User>({} as User);
 
+  const navigate = useNavigate();
+
+  const logout = useCallback(() => {
+    setSnack({ message: "Your session has expired!", open: true, severity: 'info' })
+    setTimeout(() => {
+      localAuthManager().logout();
+      navigate(routePaths.auth.login)
+    }, 3000)
+  }, [navigate])
+
+  const inTimeLine = useCallback((postId: string) => posts.find(p => p.id === postId), []);
+
+  const addNewsPosts = useCallback((posts: Post[]) => {
+    const newPosts = posts.filter(post => !inTimeLine(post.id))
+    setPosts([...newPosts, ...posts])
+  }, [inTimeLine])
 
   useEffect(() => {
     setUser({
@@ -63,14 +84,16 @@ const Right = () => {
   }, []);
 
   useEffect(() => {
-    const inTimeLine = (postId: string) => posts.find(p => p.id === postId);
     remotePost().getAllMyPosts().then(result => {
+      if (result.tokenExpired) {
+        logout()
+        return
+      }
       if (result.body) {
-        const newPosts = result.body.filter(post => !inTimeLine(post.id))
-        setPosts([...newPosts, ...posts])
+        addNewsPosts(result.body)
       }
     })
-  }, []);
+  }, [addNewsPosts, logout]);
 
   const onCreatePost = async (description: string) => {
     try {
@@ -116,8 +139,19 @@ const Right = () => {
           avatarUrl: user.avatarUrl,
           createPostOnClick: onCreatePost,
         }} />
-        { postsOrEmptyMessage }
+        {postsOrEmptyMessage}
       </Feed>
+
+
+      <Snackbar
+        open={snack.open}
+        onClose={() => setSnack({ open: false, message: '', severity: '' })}
+        autoHideDuration={5000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} >
+        <Alert severity={snack.severity as AlertColor} sx={{ width: '100%' }}>
+          <span style={{ fontSize: '1.1rem' }}>{snack.message}</span>
+        </Alert>
+      </Snackbar>
     </Page>
   )
 }

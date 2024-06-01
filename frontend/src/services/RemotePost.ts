@@ -27,6 +27,7 @@ type PostResponse<T> = {
   body?: T,
   message: string
   success: boolean
+  tokenExpired: boolean
 }
 
 const createPost = async (description: string): Promise<PostResponse<Post>> => {
@@ -51,6 +52,7 @@ const createPost = async (description: string): Promise<PostResponse<Post>> => {
     return {
       message: 'try again later',
       success: false,
+      tokenExpired: false,
     }
   }
 
@@ -58,6 +60,7 @@ const createPost = async (description: string): Promise<PostResponse<Post>> => {
   return {
     message: 'Post created.',
     success: true,
+    tokenExpired: false,
     body: {
       id: data.post_id,
       owner: {
@@ -87,9 +90,17 @@ const getAllMyPosts = async (): Promise<PostResponse<Post[]>> => {
   })
 
   if (!response.ok) {
+    if(response.status === 403) {
+      return {
+        message: 'token expired',
+        success: false,
+        tokenExpired: true,
+      }  
+    }
     return {
       message: 'try again later',
       success: false,
+      tokenExpired: false,
     }
   }
 
@@ -97,6 +108,7 @@ const getAllMyPosts = async (): Promise<PostResponse<Post[]>> => {
   return {
     message: 'posts fetched.',
     success: true,
+    tokenExpired: false,
     body: data.map((post: PostBody) => ({
       id: post.post_id,
       owner: {
