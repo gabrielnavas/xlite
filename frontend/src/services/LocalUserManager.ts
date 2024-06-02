@@ -7,6 +7,7 @@ type User = {
   email: string
   fullName: string
   createdAt: Date
+  avatarUrl: string
 }
 
 const getUserLogged = async (): Promise<User> => {

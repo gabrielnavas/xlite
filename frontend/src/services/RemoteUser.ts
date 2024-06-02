@@ -5,6 +5,7 @@ type User = {
   email: string
   fullName: string
   createdAt: Date
+  avatarUrl: string
 }
 
 type UserFromResponse = {
@@ -48,7 +49,8 @@ const getUserLogged = async (): Promise<UserResponse<User>> => {
       username: data.username,
       email: data.email,
       createdAt: new Date(data.created_at),
-      fullName: data.full_name
+      fullName: data.full_name,
+      avatarUrl: "https://pbs.twimg.com/profile_images/1743633889216630784/j6WRSKS4_400x400.jpg"
     },
   }
 }

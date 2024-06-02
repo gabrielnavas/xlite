@@ -5,7 +5,7 @@ export type UpdateForm = {
 export type Data = {
   user: {
     avatarUrl: string
-    name: string;
+    fullName: string;
     username: string;
   },
   post: {

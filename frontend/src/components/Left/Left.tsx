@@ -1,5 +1,8 @@
 import { styled } from "@mui/material";
-import Sidebar from "../Sidebar/Sidebar";
+
+type Props = {
+  children: React.ReactNode
+}
 
 const Container = styled('div')(({ theme }) => ({
   width: '15%',
@@ -13,10 +16,10 @@ const Container = styled('div')(({ theme }) => ({
   },
 }));
 
-const Left = () => {
+const Left = ({ children }: Props) => {
   return (
     <Container>
-      <Sidebar />
+      {children}
     </Container>
   )
 }

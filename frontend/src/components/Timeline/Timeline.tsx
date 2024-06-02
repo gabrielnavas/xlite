@@ -1,24 +1,30 @@
 import { Alert, AlertColor, Snackbar, SnackbarOrigin, styled } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
 import CreatePost from "../Post/CreatePost/CreatePost";
-import PostComponent from "../Post/Post";
-import remotePost from "../../services/RemotePost";
+import { useCallback, useEffect, useState } from "react";
 import PostMessage from "../Post/PostMessage";
-import { routePaths } from "../../Router";
-import { useNavigate } from "react-router-dom";
-import localAuthManager from "../../services/LocalAuthManager";
+import Post from "../Post/Post";
+import remotePost from "../../services/RemotePost";
+import localUserManager from "../../services/LocalUserManager";
 
-const Container = styled('div')(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'center',
-  width: '85%',
-  [theme.breakpoints.down('md')]: {
-    width: '92%',
-  },
-  [theme.breakpoints.between('xs', 'sm')]: {
-    width: '97%',
-  },
+
+const Container = styled('div')(() => ({
 }));
+
+export type Post = {
+  id: string;
+  createdAt: Date;
+  description: string;
+  owner: {
+    id: string
+    avatarUrl: string;
+    fullName: string;
+    username: string;
+  }
+}
+
+type User = {
+  avatarUrl: string;
+}
 
 const Feed = styled('ul')(({ theme }) => ({
   display: 'flex',
@@ -33,46 +39,34 @@ const Feed = styled('ul')(({ theme }) => ({
   },
 }));
 
-type Post = {
-  id: string;
-  createdAt: Date;
-  description: string;
-  owner: {
-    id: string
-    avatarUrl: string;
-    fullName: string;
-    username: string;
-  }
-}
 
-type User = {
-  avatarUrl: string;
-  name: string;
-  username: string;
-}
-
-type SnackData = {
+export type SnackData = {
   open: boolean,
   message: string,
   severity: string,
   position?: SnackbarOrigin
 }
 
-const Right = () => {
-  const [snack, setSnack] = useState<SnackData>({} as SnackData);
+type Props = {
+  posts: Post[]
+}
 
-  const [posts, setPosts] = useState<Post[]>([]);
+const Timeline = (props: Props) => {
+  const [snack, setSnack] = useState<SnackData>({} as SnackData);
   const [user, setUser] = useState<User>({} as User);
 
-  const navigate = useNavigate();
+  const [posts, setPosts] = useState<Post[]>([]);
 
-  const logout = useCallback(() => {
-    setSnack({ message: "Your session has expired!", open: true, severity: 'info', position: { horizontal: 'center', vertical: 'bottom' } })
-    setTimeout(() => {
-      localAuthManager().logout();
-      navigate(routePaths.auth.login)
-    }, 3000)
-  }, [navigate])
+  useEffect(() => {
+    setPosts(props.posts)
+  }, [props.posts])
+
+  useEffect(() => {
+    localUserManager().getUserLogged().then(user => {
+      user.createdAt
+      setUser({ avatarUrl: user.avatarUrl });
+    })
+  }, []);
 
   const inTimeLine = useCallback((postId: string) => posts.find(p => p.id === postId), []);
 
@@ -92,31 +86,10 @@ const Right = () => {
     })
   }, [loadNewsPosts, posts])
 
-  useEffect(() => {
-    setUser({
-      avatarUrl: "https://pbs.twimg.com/profile_images/1743633889216630784/j6WRSKS4_400x400.jpg",
-      name: 'Gabs',
-      username: 'xgnavas'
-    });
-  }, []);
-
-  useEffect(() => {
-    remotePost().getAllMyPosts().then(result => {
-      if (result.tokenExpired) {
-        logout()
-        return
-      }
-      if (result.body) {
-        loadNewsPosts(result.body)
-      }
-    })
-  }, [loadNewsPosts, logout]);
-
   const onCreatePost = async (description: string) => {
     try {
       const result = await remotePost().createPost(description)
       if (!result.success) {
-        console.log(result.message)
         setSnack({ message: "Try again later", open: true, severity: 'error' as AlertColor, position: { horizontal: 'center', vertical: 'bottom' } })
       } else {
         if (result.body) {
@@ -126,7 +99,6 @@ const Right = () => {
       }
     } catch (ex) {
       setSnack({ message: "Try again later", open: true, severity: 'error' as AlertColor })
-      console.log(ex)
     }
   }
 
@@ -139,9 +111,13 @@ const Right = () => {
     <PostMessage message="Start with post..." />
   ) : (
     posts.map((post, index) => (
-      <PostComponent
+      <Post
         key={`${post.id}${index}`}
-        user={user!}
+        user={{
+          avatarUrl: post.owner.avatarUrl,
+          fullName: post.owner.fullName,
+          username: post.owner.username
+        }}
         post={{
           id: post.id,
           createdAt: post.createdAt,
@@ -175,4 +151,4 @@ const Right = () => {
   )
 }
 
-export default Right;
+export default Timeline;

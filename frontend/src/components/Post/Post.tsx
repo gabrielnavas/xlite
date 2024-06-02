@@ -9,7 +9,7 @@ import PostBase from "./PostBase";
 type Props = {
   user: {
     avatarUrl: string
-    name: string;
+    fullName: string;
     username: string;
   },
   post: {

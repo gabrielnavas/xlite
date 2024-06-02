@@ -19,7 +19,7 @@ const Container = styled('section')(({ theme }) => ({
 
 type Props = {
   user: {
-    name: string;
+    fullName: string;
     username: string;
   },
   post: {
@@ -35,7 +35,7 @@ const RightSide = ({ post, user }: Props) => {
     <Container>
       <HeaderPost
         datePost={post.createdAt}
-        name={user.name}
+        name={user.fullName}
         username={user.username}
         openOnRemoveQuestionShield={post.openOnRemoveQuestionShield}
       />
