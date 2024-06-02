@@ -30,6 +30,20 @@ type PostResponse<T> = {
   tokenExpired: boolean
 }
 
+function mapToPost(posts: PostBody[]): Post[] | undefined {
+  return posts.map((post: PostBody) => ({
+    id: post.post_id,
+    owner: {
+      id: post.owner_id,
+      avatarUrl: post.owner_avatar_url,
+      fullName: post.owner_full_name,
+      username: post.owner_username,
+    },
+    description: post.description,
+    createdAt: new Date(post.created_at)
+  }))
+}
+
 const createPost = async (description: string): Promise<PostResponse<Post>> => {
   const token = localAuthManager().getToken(); 
   
@@ -76,14 +90,13 @@ const createPost = async (description: string): Promise<PostResponse<Post>> => {
 }
 
 
-const getAllMyPosts = async (): Promise<PostResponse<Post[]>> => {
+const getAllByOwner = async (): Promise<PostResponse<Post[]>> => {
   const token = localAuthManager().getToken(); 
 
-  const url = `${import.meta.env.VITE_ENDPOINT_API}/post`
+  const url = `${import.meta.env.VITE_ENDPOINT_API}/post/owner`
   const response = await fetch(url, {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': `Bearer ${token}`
     },
@@ -104,27 +117,54 @@ const getAllMyPosts = async (): Promise<PostResponse<Post[]>> => {
     }
   }
 
-  const data = await response.json()
+  const data = await response.json() as PostBody[]
   return {
     message: 'posts fetched.',
     success: true,
     tokenExpired: false,
-    body: data.map((post: PostBody) => ({
-      id: post.post_id,
-      owner: {
-        id: post.owner_id,
-        avatarUrl: post.owner_avatar_url,
-        fullName: post.owner_full_name,
-        username: post.owner_username,
-      },
-      description: post.description,
-      createdAt: new Date(post.created_at)
-    })),
+    body: mapToPost(data),
   }
 }
 
+const getAll = async (): Promise<PostResponse<Post[]>> => {
+  const token = localAuthManager().getToken(); 
+
+  const url = `${import.meta.env.VITE_ENDPOINT_API}/post`
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+  })
+
+  if (!response.ok) {
+    if(response.status === 403) {
+      return {
+        message: 'token expired',
+        success: false,
+        tokenExpired: true,
+      }  
+    }
+    return {
+      message: 'try again later',
+      success: false,
+      tokenExpired: false,
+    }
+  }
+
+  const data = await response.json() as PostBody[]
+  return {
+    message: 'posts fetched.',
+    success: true,
+    tokenExpired: false,
+    body: mapToPost(data),
+  }
+}
+
+
 const remotePost = () => {
-  return { createPost, getAllMyPosts }
+  return { createPost, getAllByOwner, getAll }
 }
 
 export default remotePost

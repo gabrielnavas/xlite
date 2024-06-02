@@ -16,7 +16,7 @@ const TimelineContainer = styled('div')(() => ({
 }));
 
 
-const TimelineHome = () => {
+const TimelineProfile = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [snack, setSnack] = useState<SnackData>({} as SnackData);
 
@@ -32,7 +32,7 @@ const TimelineHome = () => {
 
   useEffect(() => {
     (async () => {
-      const result = await remotePost().getAll()
+      const result = await remotePost().getAllByOwner()
       if (result.tokenExpired) {
         logout()
         return
@@ -67,4 +67,4 @@ const TimelineHome = () => {
   )
 }
 
-export default TimelineHome;
+export default TimelineProfile;
