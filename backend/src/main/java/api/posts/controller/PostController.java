@@ -36,13 +36,22 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-    @GetMapping
-    public ResponseEntity<List<PostResponseDTO>> getPosts(
+    @GetMapping("/owner")
+    public ResponseEntity<List<PostResponseDTO>> getPostsByOwner(
             @RequestHeader("Authorization") String authorization
     ) {
         String email = tokenService.validateTokenAndGetSubject(authorization);
         User user = userService.findUserByEmail(email);
         List<Post> posts = postService.getAllPostsByOwner(user);
+        List<PostResponseDTO> responseDto = PostResponseDTO.from(posts);
+        return ResponseEntity.ok().body(responseDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PostResponseDTO>> getPosts(
+            @RequestHeader("Authorization") String authorization
+    ) {
+        List<Post> posts = postService.getAllPosts();
         List<PostResponseDTO> responseDto = PostResponseDTO.from(posts);
         return ResponseEntity.ok().body(responseDto);
     }

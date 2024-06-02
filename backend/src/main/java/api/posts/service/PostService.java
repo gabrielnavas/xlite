@@ -8,5 +8,6 @@ import java.util.List;
 public interface PostService {
     Post createPost(User owner, String description);
 
-    List<Post> getAllPostsByOwner(User user);
+    List<Post> getAllPostsByOwner(User owner);
+    List<Post> getAllPosts();
 }

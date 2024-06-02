@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface PostRepository extends JpaRepository<Post, UUID> {
     List<Post> findByOwnerIdOrderByCreatedAtDesc(String id);
+    List<Post> findAllByOrderByCreatedAtDesc();
 }

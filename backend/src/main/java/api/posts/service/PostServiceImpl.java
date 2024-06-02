@@ -25,7 +25,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getAllPostsByOwner(User user) {
-        return postRepository.findByOwnerIdOrderByCreatedAtDesc(user.getId());
+    public List<Post> getAllPostsByOwner(User owner) {
+        return postRepository.findByOwnerIdOrderByCreatedAtDesc(owner.getId());
+    }
+
+    @Override
+    public List<Post> getAllPosts() {
+        return postRepository.findAllByOrderByCreatedAtDesc();
     }
 }
