@@ -1,6 +1,6 @@
 package api.posts.service;
 
-import api.posts.exception.UserNotFoundByLogin;
+import api.posts.exception.UserNotFoundByLoginException;
 import api.posts.models.User;
 import api.posts.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -13,6 +13,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(UserNotFoundByLogin::new);
+        return userRepository.findByEmail(email).orElseThrow(UserNotFoundByLoginException::new);
     }
 }

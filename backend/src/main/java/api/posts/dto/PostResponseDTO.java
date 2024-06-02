@@ -30,10 +30,10 @@ public record PostResponseDTO(
 
     public static PostResponseDTO from(Post post) {
         return new PostResponseDTO(
-                post.getId(),
+                post.getId().toString(),
                 post.getDescription(),
                 post.getCreatedAt(),
-                post.getOwner().getId(),
+                post.getOwner().getId().toString(),
                 "",
                 post.getOwner().getFullName(),
                 post.getOwner().getUsername()

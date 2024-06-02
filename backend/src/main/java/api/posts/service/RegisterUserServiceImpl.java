@@ -1,8 +1,8 @@
 package api.posts.service;
 
 import api.posts.dto.RegisterRequestDTO;
-import api.posts.exception.UserAlreadyExistsWithEmail;
-import api.posts.exception.UserAlreadyExistsWithUsername;
+import api.posts.exception.UserAlreadyExistsWithEmailException;
+import api.posts.exception.UserAlreadyExistsWithUsernameException;
 import api.posts.models.Role;
 import api.posts.models.User;
 import api.posts.repository.UserRepository;
@@ -43,12 +43,12 @@ public class RegisterUserServiceImpl implements RegisterUserService {
     private User makeUser(String fullName, String username, String email, String password) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
-            throw new UserAlreadyExistsWithEmail();
+            throw new UserAlreadyExistsWithEmailException();
         }
 
         user = userRepository.findByUsername(username);
         if (user.isPresent()) {
-            throw new UserAlreadyExistsWithUsername();
+            throw new UserAlreadyExistsWithUsernameException();
         }
 
         User newUser = new User();

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -19,7 +20,7 @@ public class User {
     LocalDateTime createdAt;
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
     @Column(name = "full_name", nullable = false)
     private String fullName;
     @Column(unique = true, nullable = false)

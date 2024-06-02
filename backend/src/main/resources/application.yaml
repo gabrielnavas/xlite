@@ -28,4 +28,4 @@ api:
     offset: -03:00
   cors:
     allowed-origins: "*"
-    allowed-methods: "GET,POST"
+    allowed-methods: "GET,POST,DELETE"

@@ -1,6 +1,6 @@
 package api.posts.service;
 
-import api.posts.exception.UserNotFoundByLogin;
+import api.posts.exception.UserNotFoundByLoginException;
 import api.posts.infra.security.TokenService;
 import api.posts.models.User;
 import api.posts.repository.UserRepository;
@@ -18,9 +18,9 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public String generateToken(String email, String password) {
-        User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundByLogin::new);
+        User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundByLoginException::new);
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new UserNotFoundByLogin();
+            throw new UserNotFoundByLoginException();
         }
         return tokenService.generateToken(user);
     }

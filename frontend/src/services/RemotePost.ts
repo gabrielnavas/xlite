@@ -45,8 +45,8 @@ function mapToPost(posts: PostBody[]): Post[] | undefined {
 }
 
 const createPost = async (description: string): Promise<PostResponse<Post>> => {
-  const token = localAuthManager().getToken(); 
-  
+  const token = localAuthManager().getToken();
+
   const body = {
     description,
   }
@@ -90,8 +90,43 @@ const createPost = async (description: string): Promise<PostResponse<Post>> => {
 }
 
 
+const deletePost = async (postId: string): Promise<PostResponse<void>> => {
+  const token = localAuthManager().getToken();
+
+  const url = `${import.meta.env.VITE_ENDPOINT_API}/post/${postId}`
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    },
+  })
+
+  if (!response.ok) {
+    if(response.status === 403) {
+      return {
+        message: 'token expired',
+        success: false,
+        tokenExpired: true,
+      }
+    }
+    return {
+      message: 'try again later',
+      success: false,
+      tokenExpired: false,
+    }
+  }
+
+  return {
+    message: 'Post deleted.',
+    success: true,
+    tokenExpired: false,
+  }
+}
+
+
+
 const getAllByOwner = async (): Promise<PostResponse<Post[]>> => {
-  const token = localAuthManager().getToken(); 
+  const token = localAuthManager().getToken();
 
   const url = `${import.meta.env.VITE_ENDPOINT_API}/post/owner`
   const response = await fetch(url, {
@@ -103,12 +138,12 @@ const getAllByOwner = async (): Promise<PostResponse<Post[]>> => {
   })
 
   if (!response.ok) {
-    if(response.status === 403) {
+    if (response.status === 403) {
       return {
         message: 'token expired',
         success: false,
         tokenExpired: true,
-      }  
+      }
     }
     return {
       message: 'try again later',
@@ -127,7 +162,7 @@ const getAllByOwner = async (): Promise<PostResponse<Post[]>> => {
 }
 
 const getAll = async (): Promise<PostResponse<Post[]>> => {
-  const token = localAuthManager().getToken(); 
+  const token = localAuthManager().getToken();
 
   const url = `${import.meta.env.VITE_ENDPOINT_API}/post`
   const response = await fetch(url, {
@@ -139,12 +174,12 @@ const getAll = async (): Promise<PostResponse<Post[]>> => {
   })
 
   if (!response.ok) {
-    if(response.status === 403) {
+    if (response.status === 403) {
       return {
         message: 'token expired',
         success: false,
         tokenExpired: true,
-      }  
+      }
     }
     return {
       message: 'try again later',
@@ -164,7 +199,7 @@ const getAll = async (): Promise<PostResponse<Post[]>> => {
 
 
 const remotePost = () => {
-  return { createPost, getAllByOwner, getAll }
+  return { createPost, getAllByOwner, getAll, deletePost }
 }
 
 export default remotePost

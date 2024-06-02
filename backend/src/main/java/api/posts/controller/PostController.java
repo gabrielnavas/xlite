@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/post")
@@ -54,5 +55,15 @@ public class PostController {
         List<Post> posts = postService.getAllPosts();
         List<PostResponseDTO> responseDto = PostResponseDTO.from(posts);
         return ResponseEntity.ok().body(responseDto);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<List<PostResponseDTO>> deletePost(
+            @RequestHeader("Authorization") String authorization,
+            @PathVariable("id") UUID postId
+            ) {
+        postService.removePost(postId);
+        return ResponseEntity.noContent().build();
     }
 }

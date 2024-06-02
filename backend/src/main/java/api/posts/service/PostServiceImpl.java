@@ -1,5 +1,6 @@
 package api.posts.service;
 
+import api.posts.exception.PostNotFoundException;
 import api.posts.models.Post;
 import api.posts.models.User;
 import api.posts.repository.PostRepository;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -32,5 +35,14 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getAllPosts() {
         return postRepository.findAllByOrderByCreatedAtDesc();
+    }
+
+    @Override
+    public void removePost(UUID id) {
+        Optional<Post> optionalPost = postRepository.findById(id);
+        if(optionalPost.isEmpty()) {
+            throw new PostNotFoundException();
+        }
+        postRepository.deleteById(id);
     }
 }
