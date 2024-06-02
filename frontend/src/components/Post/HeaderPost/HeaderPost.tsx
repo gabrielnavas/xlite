@@ -5,6 +5,8 @@ import Name from "./Name";
 import MenuHeader from "./MenuHeader";
 import Username from "./Username";
 import { styled } from "@mui/material";
+import { useEffect, useState } from "react";
+import localUserManager from "../../../services/LocalUserManager";
 
 type Props = {
   name: string;
@@ -30,9 +32,17 @@ const DataHeader = styled('span')(({theme}) => ({
 }));
 
 const HeaderPost = ({ name, username, datePost, openOnRemoveQuestionShield }: Props) => {
-  const postIsMyOwn = Math.floor(Math.random() * 2) > 0;
+  const [isByOwn, setIsByOwn] = useState(false)
 
-  const optionHeader = postIsMyOwn && (
+  useEffect(() => {
+    localUserManager().getUserLogged().then(user => {
+      if(user.username === username) {
+        setIsByOwn(true)
+      }
+    })
+  }, [username])
+
+  const optionHeader = isByOwn && (
     <span>
       <MenuHeader
         openOnRemoveQuestionShield={openOnRemoveQuestionShield}
