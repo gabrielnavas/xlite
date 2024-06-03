@@ -6,7 +6,7 @@ const ContainerCustom = styled(Container)(() => ({
   position: 'sticky',
   top: 30,
   left: 0,
-  height: '100vh', // Para ocupar a altura total da viewport
+  height: '100vh',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',

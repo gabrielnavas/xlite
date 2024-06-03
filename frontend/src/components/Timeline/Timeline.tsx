@@ -32,7 +32,6 @@ const Feed = styled('ul')(({ theme }) => ({
   position: 'relative',
   width: '75%',
   gap: 10,
-  borderLeft: '1px solid gray',
   [theme.breakpoints.down('md')]: {
     borderLeft: 'none',
     width: '100%',
