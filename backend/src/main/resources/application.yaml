@@ -17,6 +17,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+      resolve-lazily: true
+
 api:
   admin:
     email: admin@admin.com

@@ -9,12 +9,16 @@ import api.posts.service.PostService;
 import api.posts.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.core.io.Resource;
 
 @RestController
 @RequestMapping("/post")
@@ -65,5 +69,22 @@ public class PostController {
             ) {
         postService.removePost(postId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/images")
+    public ResponseEntity<Post> uploadImage(
+            @PathVariable("id") UUID postId,
+            @RequestParam("file") MultipartFile file
+        ) {
+        Post post = postService.storeImage(postId, file);
+        return ResponseEntity.ok().body(post);
+    }
+
+
+    @GetMapping("/images/{filename}")
+    public ResponseEntity<Resource> downloadImage(@PathVariable String filename) {
+        Resource file = postService.loadImage(filename);
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
 }

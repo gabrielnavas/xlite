@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -27,4 +29,7 @@ public class Post {
 
     @ManyToOne
     private User owner;
+
+    @OneToMany
+    private List<PostImage> postImages;
 }
