@@ -11,7 +11,7 @@ type PostBody = {
 }
 
 
-type Post = {
+export type Post = {
   id: string;
   createdAt: Date;
   description: string;

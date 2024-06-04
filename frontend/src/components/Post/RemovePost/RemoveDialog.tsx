@@ -6,7 +6,7 @@ type Props = {
   onClickRemove: () => void
   open: boolean
 }
-  
+
 const RemoveDialog = ({ onClickOpen, open, onClickClose, onClickRemove }: Props) => {
   return (
     <Dialog
@@ -22,8 +22,8 @@ const RemoveDialog = ({ onClickOpen, open, onClickClose, onClickRemove }: Props)
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button size="small" onClick={onClickClose}>Cancel</Button>
-        <Button size="small"onClick={onClickRemove} autoFocus>
+        <Button size="small" variant="outlined" onClick={onClickClose}>Cancel</Button>
+        <Button size="small" color="error" variant="contained" onClick={onClickRemove} autoFocus>
           Remove
         </Button>
       </DialogActions>
