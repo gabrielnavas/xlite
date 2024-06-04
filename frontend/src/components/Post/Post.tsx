@@ -34,9 +34,25 @@ const Post = ({ user, post }: Props) => {
 
   const navigate = useNavigate()
 
-  const onFinishUpdate = (data: { description: string }): void => {
-    post.text = data.description;
-    setUpdateModalOpen(false);
+  const onFinishUpdate = (postId: string, postDescription: string): void => {
+    remotePost().updatePost(postId, postDescription).then((result) => {
+      if (!result.success) {
+        setSnack({ message: result.message, open: true, severity: 'warning', position: { horizontal: 'center', vertical: 'bottom' } })
+        if (result.tokenExpired) {
+          setTimeout(() => {
+            navigate(routePaths.auth.login)
+          }, 2000)
+        }
+      } else {
+        post.text = postDescription;
+        setUpdateModalOpen(false);
+        setSnack({ message: result.message, open: true, severity: 'success', position: { horizontal: 'center', vertical: 'bottom' } })
+      }
+    })
+    .catch((ex) => {
+      console.log(ex);
+      setSnack({ message: 'try again later', open: true, severity: 'warning', position: { horizontal: 'center', vertical: 'bottom' } })
+    })
   }
 
   const onClickRemove = (): void => {
@@ -46,7 +62,7 @@ const Post = ({ user, post }: Props) => {
         if (result.tokenExpired) {
           setTimeout(() => {
             navigate(routePaths.auth.login)
-          }, 3000)
+          }, 2000)
         }
       } else {
         setSnack({ message: result.message, open: true, severity: 'success', position: { horizontal: 'center', vertical: 'bottom' } })
@@ -72,7 +88,7 @@ const Post = ({ user, post }: Props) => {
       <ModalUpdate
         open={updateModalOpen}
         onClose={() => setUpdateModalOpen(false)}
-        onFinishUpdate={onFinishUpdate}
+        onFinishUpdate={data => onFinishUpdate(post.id, data.description)}
         data={{
           user: user,
           post: post

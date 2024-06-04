@@ -54,6 +54,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void updatePartialPost(UUID id, String description) {
+        Optional<Post> optionalPost = postRepository.findById(id);
+        if(optionalPost.isEmpty()) {
+            throw new PostNotFoundException();
+        }
+        Post post = optionalPost.get();
+        post.setDescription(description);
+        postRepository.save(post);
+    }
+
+    @Override
     public Post storeImage(UUID postId, MultipartFile file) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if(optionalPost.isEmpty()) {

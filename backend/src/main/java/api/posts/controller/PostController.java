@@ -2,6 +2,7 @@ package api.posts.controller;
 
 import api.posts.dto.CreatePostRequestDTO;
 import api.posts.dto.PostResponseDTO;
+import api.posts.dto.UpdatePartialPostRequestDTO;
 import api.posts.infra.security.TokenService;
 import api.posts.models.Post;
 import api.posts.models.User;
@@ -61,6 +62,15 @@ public class PostController {
         return ResponseEntity.ok().body(responseDto);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<List<PostResponseDTO>> updatePost(
+            @RequestHeader("Authorization") String authorization,
+            @PathVariable("id") UUID postId,
+            @RequestBody UpdatePartialPostRequestDTO updatePartialPostRequestDTO
+    ) {
+        postService.updatePartialPost(postId, updatePartialPostRequestDTO.description());
+        return ResponseEntity.noContent().build();
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<List<PostResponseDTO>> deletePost(

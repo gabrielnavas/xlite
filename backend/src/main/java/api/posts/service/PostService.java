@@ -14,6 +14,7 @@ public interface PostService {
     List<Post> getAllPostsByOwner(User owner);
     List<Post> getAllPosts();
     void removePost(UUID id);
+    void updatePartialPost(UUID id, String description);
     Post storeImage(UUID postId, MultipartFile file);
     Resource loadImage(String imageName);
 }

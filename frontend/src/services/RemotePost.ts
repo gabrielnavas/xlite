@@ -89,6 +89,45 @@ const createPost = async (description: string): Promise<PostResponse<Post>> => {
   }
 }
 
+const updatePost = async (postId: string, description: string): Promise<PostResponse<void>> => {
+  const token = localAuthManager().getToken();
+
+  const headers = new Headers();
+  headers.append("Content-Type", "application/json");
+  headers.append("Authorization", `Bearer ${token}`);
+
+  const bodyRaw = JSON.stringify({ description })
+
+  const url = `${import.meta.env.VITE_ENDPOINT_API}/post/${postId}`
+  
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: headers,
+    body: bodyRaw,
+  })
+
+  if (!response.ok) {
+    if (response.status === 403) {
+      return {
+        message: 'token expired',
+        success: false,
+        tokenExpired: true,
+      }
+    }
+    return {
+      message: 'try again later',
+      success: false,
+      tokenExpired: false,
+    }
+  }
+
+  return {
+    message: 'Post updated.',
+    success: true,
+    tokenExpired: false,
+  }
+}
+
 
 const deletePost = async (postId: string): Promise<PostResponse<void>> => {
   const token = localAuthManager().getToken();
@@ -102,7 +141,7 @@ const deletePost = async (postId: string): Promise<PostResponse<void>> => {
   })
 
   if (!response.ok) {
-    if(response.status === 403) {
+    if (response.status === 403) {
       return {
         message: 'token expired',
         success: false,
@@ -199,7 +238,7 @@ const getAll = async (): Promise<PostResponse<Post[]>> => {
 
 
 const remotePost = () => {
-  return { createPost, getAllByOwner, getAll, deletePost }
+  return { createPost, getAllByOwner, getAll, deletePost, updatePost }
 }
 
 export default remotePost
