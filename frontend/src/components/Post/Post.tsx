@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import LeftSide from "./LeftSide/LeftSide";
+import LeftSide from "./CreatePost/LeftSide";
 import RightSide from "./RightSide/RightSide";
 import ModalUpdate from "./ModalUpdate/ModalUpdate";
 import RemoveDialog from "./RemovePost/RemoveDialog";

@@ -18,7 +18,7 @@ const validationSchema = yup.object<CreateForm>({
     .max(255, 'Description should be of maximum 255 characters length'),
 });
 
-const CreatePostRightSide = ({createPostOnClick}: Props) => {
+const Form = ({createPostOnClick}: Props) => {
   const formik = useFormik({
     initialValues: {
       description: '',
@@ -59,4 +59,4 @@ const CreatePostRightSide = ({createPostOnClick}: Props) => {
   )
 }
 
-export default CreatePostRightSide;
+export default Form;

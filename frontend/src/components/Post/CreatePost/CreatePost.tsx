@@ -1,6 +1,6 @@
-import LeftSide from "../LeftSide/LeftSide";
-import CreatePostRightSide from "./CreatePostRightSide";
+import LeftSide from "./LeftSide";
 import PostBase from "../PostBase";
+import RightSide from "./RightSide";
 
 type Props = {
   user: {
@@ -13,7 +13,10 @@ const CreatePost = ({ user }: Props) => {
   return (
     <PostBase>
       <LeftSide avatarUrl={user.avatarUrl} />
-      <CreatePostRightSide createPostOnClick={user.createPostOnClick} />
+      <RightSide user={{
+        createPostOnClick: user.createPostOnClick,
+        avatarUrl: user.avatarUrl
+      }} />
     </PostBase>
   )
 }
