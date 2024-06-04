@@ -5,7 +5,7 @@ type Props = {
 }
 
 const Container = styled('div')(({ theme }) => ({
-  width: '15%',
+  // width: '15%',
   position: 'relative',
   [theme.breakpoints.down('md')]: {
     width: '8%',
