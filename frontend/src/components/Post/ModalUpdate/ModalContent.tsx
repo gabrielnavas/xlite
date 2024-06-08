@@ -1,19 +1,19 @@
 import { forwardRef } from "react";
 
 import Form from "./Form";
-import { Data, UpdateForm } from "./types";
+import { Post } from "../../../services/post/RemotePost";
 
 type BoxInsideProps = {
-  data: Data;
-  onFinishUpdate: (data: UpdateForm) => void;
+  post: Post
+  onClose: () => void
 };
 
-const ModalContent = forwardRef<HTMLDivElement, BoxInsideProps>(({ data, onFinishUpdate }, ref) => {
+const ModalContent = forwardRef<HTMLDivElement, BoxInsideProps>(({ post, onClose }, ref) => {
   return (
     <div ref={ref}>
       <Form
-        data={data}
-        onFinishUpdate={onFinishUpdate}
+        post={post}
+        onClose={onClose}
       />
     </div>
   );

@@ -1,19 +1,18 @@
-import localAuthManager from "./LocalAuthManager";
-
 type PostBody = {
   post_id: string;
-  created_at: Date;
+  created_at: string;
   description: string;
   owner_id: string
   owner_avatar_url: string;
   owner_full_name: string;
   owner_username: string;
+  image_names: string[]
 }
 
 
 export type Post = {
   id: string;
-  createdAt: Date;
+  createdAt: string;
   description: string;
   owner: {
     id: string
@@ -21,6 +20,7 @@ export type Post = {
     fullName: string;
     username: string;
   }
+  imageNames: string[]
 }
 
 type PostResponse<T> = {
@@ -30,8 +30,8 @@ type PostResponse<T> = {
   tokenExpired: boolean
 }
 
-function mapToPost(posts: PostBody[]): Post[] | undefined {
-  return posts.map((post: PostBody) => ({
+function mapToPost(post: PostBody): Post {
+  return ({
     id: post.post_id,
     owner: {
       id: post.owner_id,
@@ -40,13 +40,16 @@ function mapToPost(posts: PostBody[]): Post[] | undefined {
       username: post.owner_username,
     },
     description: post.description,
-    createdAt: new Date(post.created_at)
-  }))
+    createdAt: post.created_at,
+    imageNames: post.image_names
+  })
 }
 
-const createPost = async (description: string): Promise<PostResponse<Post>> => {
-  const token = localAuthManager().getToken();
+function mapToPosts(posts: PostBody[]): Post[] {
+  return posts.map(mapToPost)
+}
 
+const createPost = (token: string) => async (description: string): Promise<PostResponse<Post>> => {
   const body = {
     description,
   }
@@ -75,23 +78,94 @@ const createPost = async (description: string): Promise<PostResponse<Post>> => {
     message: 'Post created.',
     success: true,
     tokenExpired: false,
-    body: {
-      id: data.post_id,
-      owner: {
-        id: data.owner_id,
-        avatarUrl: data.owner_avatar_url,
-        fullName: data.owner_full_name,
-        username: data.owner_username,
-      },
-      description: data.description,
-      createdAt: new Date(data.created_at)
-    },
+    body: mapToPost(data),
   }
 }
 
-const updatePost = async (postId: string, description: string): Promise<PostResponse<void>> => {
-  const token = localAuthManager().getToken();
 
+
+const uploadImages = (token: string) => async (postId: string, imageUrls: string[]): Promise<PostResponse<Post>> => {
+  const messagesRecognizeds = ['max upload size is']
+  
+  const downloadImage = async (url: string): Promise<Blob> => {
+    const response = await fetch(url);
+    return await response.blob()
+  };
+
+  const headers = new Headers();
+  headers.append("Authorization", `Bearer ${token}`);
+
+  const downloaded = await Promise.all(imageUrls.map(downloadImage));
+
+  const formData = new FormData();
+  downloaded.forEach((image, index) => {
+    const name = `${index+1}`
+    const file = new File([image], name)
+    formData.append('files', file, name);
+  })
+
+  const url = `${import.meta.env.VITE_ENDPOINT_API}/post/${postId}/images`
+
+  const response = await fetch(url, {
+    method: 'POST',
+    body: formData,
+    headers: headers
+  })
+
+  if (!response.ok) {
+    if (response.status === 403) {
+      return {
+        message: 'token expired',
+        success: false,
+        tokenExpired: true,
+      }
+    }
+
+    if(response.status === 400) {
+      const data = await response.json()
+      if(data.message && typeof data.message === 'string') {
+        const messageFromBody = data.message as string
+        if(messagesRecognizeds.some(message => messageFromBody.includes(message))) {
+          return {
+            message: data.message,
+            success: false,
+            tokenExpired: false,
+          }
+        }
+      }
+    }
+    return {
+      message: 'Try again later',
+      success: false,
+      tokenExpired: false,
+    }
+  }
+
+  const data = await response.json() as PostBody
+  return {
+    message: 'Post created.',
+    success: true,
+    tokenExpired: false,
+    body: mapToPost(data),
+  }
+}
+
+const downloadImage = (token: string) => async (postId: string, imageName: string): Promise<Blob> => {
+  const headers = new Headers();
+  headers.append("Authorization", `Bearer ${token}`);
+
+  const url = `${import.meta.env.VITE_ENDPOINT_API}/post/${postId}/images/${imageName}`
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: headers
+  })
+
+  return response.blob()
+}
+
+
+const updatePost = (token: string) => async (postId: string, description: string): Promise<PostResponse<void>> => {
   const headers = new Headers();
   headers.append("Content-Type", "application/json");
   headers.append("Authorization", `Bearer ${token}`);
@@ -99,7 +173,7 @@ const updatePost = async (postId: string, description: string): Promise<PostResp
   const bodyRaw = JSON.stringify({ description })
 
   const url = `${import.meta.env.VITE_ENDPOINT_API}/post/${postId}`
-  
+
   const response = await fetch(url, {
     method: 'PATCH',
     headers: headers,
@@ -129,9 +203,7 @@ const updatePost = async (postId: string, description: string): Promise<PostResp
 }
 
 
-const deletePost = async (postId: string): Promise<PostResponse<void>> => {
-  const token = localAuthManager().getToken();
-
+const deletePost = (token: string) => async (postId: string): Promise<PostResponse<void>> => {
   const url = `${import.meta.env.VITE_ENDPOINT_API}/post/${postId}`
   const response = await fetch(url, {
     method: 'DELETE',
@@ -164,9 +236,7 @@ const deletePost = async (postId: string): Promise<PostResponse<void>> => {
 
 
 
-const getAllByOwner = async (): Promise<PostResponse<Post[]>> => {
-  const token = localAuthManager().getToken();
-
+const getAllByOwner = (token: string) => async (): Promise<PostResponse<Post[]>> => {
   const url = `${import.meta.env.VITE_ENDPOINT_API}/post/owner`
   const response = await fetch(url, {
     method: 'GET',
@@ -196,13 +266,11 @@ const getAllByOwner = async (): Promise<PostResponse<Post[]>> => {
     message: 'posts fetched.',
     success: true,
     tokenExpired: false,
-    body: mapToPost(data),
+    body: mapToPosts(data),
   }
 }
 
-const getAll = async (): Promise<PostResponse<Post[]>> => {
-  const token = localAuthManager().getToken();
-
+const getAll = (token: string) => async (): Promise<PostResponse<Post[]>> => {
   const url = `${import.meta.env.VITE_ENDPOINT_API}/post`
   const response = await fetch(url, {
     method: 'GET',
@@ -232,13 +300,13 @@ const getAll = async (): Promise<PostResponse<Post[]>> => {
     message: 'posts fetched.',
     success: true,
     tokenExpired: false,
-    body: mapToPost(data),
+    body: mapToPosts(data),
   }
 }
 
 
 const remotePost = () => {
-  return { createPost, getAllByOwner, getAll, deletePost, updatePost }
+  return { createPost, getAllByOwner, getAll, deletePost, updatePost, uploadImages, downloadImage }
 }
 
 export default remotePost

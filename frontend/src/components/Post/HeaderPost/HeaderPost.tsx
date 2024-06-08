@@ -6,12 +6,12 @@ import MenuHeader from "./MenuHeader";
 import Username from "./Username";
 import { styled } from "@mui/material";
 import { useEffect, useState } from "react";
-import localUserManager from "../../../services/LocalUserManager";
+import { useAppSelector } from "../../../store/store";
 
 type Props = {
   name: string;
   username: string;
-  datePost: Date;
+  datePost: string;
   openOnRemoveQuestionShield: () => void
 }
 
@@ -21,7 +21,7 @@ const Container = styled('header')(() => ({
   alignItems: 'center'
 }));
 
-const DataHeader = styled('span')(({theme}) => ({
+const DataHeader = styled('span')(({ theme }) => ({
   paddingLeft: '0.5rem',
   [theme.breakpoints.down('md')]: {
     fontSize: '0.8rem',
@@ -34,13 +34,13 @@ const DataHeader = styled('span')(({theme}) => ({
 const HeaderPost = ({ name, username, datePost, openOnRemoveQuestionShield }: Props) => {
   const [isByOwn, setIsByOwn] = useState(false)
 
+  const user = useAppSelector(store => store.user.data)
+
   useEffect(() => {
-    localUserManager().getUserLogged().then(user => {
-      if(user.username === username) {
-        setIsByOwn(true)
-      }
-    })
-  }, [username])
+    if (user.username === username) {
+      setIsByOwn(true)
+    }
+  }, [user.username, username])
 
   const optionHeader = isByOwn && (
     <span>

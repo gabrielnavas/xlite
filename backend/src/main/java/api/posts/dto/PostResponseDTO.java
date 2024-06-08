@@ -1,6 +1,7 @@
 package api.posts.dto;
 
 import api.posts.models.Post;
+import api.posts.models.PostImage;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
@@ -25,10 +26,13 @@ public record PostResponseDTO(
         String ownerFullName,
 
         @JsonProperty("owner_username")
-        String ownerUsername
+        String ownerUsername,
+
+        @JsonProperty("image_names")
+        List<String> imageNames
 ) {
 
-    public static PostResponseDTO from(Post post) {
+    public static PostResponseDTO to(Post post) {
         return new PostResponseDTO(
                 post.getId().toString(),
                 post.getDescription(),
@@ -36,11 +40,12 @@ public record PostResponseDTO(
                 post.getOwner().getId().toString(),
                 "",
                 post.getOwner().getFullName(),
-                post.getOwner().getUsername()
+                post.getOwner().getUsername(),
+                post.getPostImages().stream().map(PostImage::getName).toList()
         );
     }
 
-    public static List<PostResponseDTO> from(List<Post> post) {
-        return post.stream().map(PostResponseDTO::from).toList();
+    public static List<PostResponseDTO> to(List<Post> post) {
+        return post.stream().map(PostResponseDTO::to).toList();
     }
 }

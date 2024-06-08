@@ -1,7 +1,7 @@
 import { formatDistanceToNow } from "date-fns";
 
 type Props = {
-  datePost: Date;
+  datePost: string;
 };
 
 const style = {
@@ -11,7 +11,7 @@ const style = {
 
 
 const DatePost = ({ datePost }: Props) => {
-  const date: string = formatDistanceToNow(datePost, { addSuffix: true });
+  const date: string = formatDistanceToNow(new Date(datePost), { addSuffix: true });
 
   return (
     <span style={style}>

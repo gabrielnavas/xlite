@@ -1,8 +1,4 @@
-type RegisterResponse = {
-  message: string;
-  success: boolean
-  body?: { token: string }
-};
+import { AuthResponse, BodyResponse } from "./types";
 
 const possivelBadRequestsMessages = ['user already exists with email', 'user already exists with username']
 
@@ -13,7 +9,7 @@ const formatMessage = (message: string) => {
   return messageFormatted;
 }
 
-const remoteRegister = async (fullName: string, username: string, email: string, password: string, passwordConfirmation: string): Promise<RegisterResponse> => {
+const remoteRegister = async (fullName: string, username: string, email: string, password: string, passwordConfirmation: string): Promise<AuthResponse> => {
   const body = {
     full_name: fullName,
     username: username,
@@ -49,12 +45,19 @@ const remoteRegister = async (fullName: string, username: string, email: string,
     }
   }
 
-  const data = await response.json()
+  const data = await response.json() as BodyResponse
   return {
     message: 'Register with success',
     success: true,
     body: {
       token: data.token,
+      user: {
+        createdAt: data.user.created_at,
+        email: data.user.email,
+        fullName: data.user.full_name,
+        roles: data.user.roles,
+        username: data.user.username
+      }
     },
   }
 }

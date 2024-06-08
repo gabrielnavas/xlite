@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -6,11 +6,11 @@ import {   Container, styled } from "@mui/material";
 
 import { routePaths } from "../Router";
 
-import localAuthManager from "../services/LocalAuthManager";
 import TimelineHome from "../components/TimelineHome/TimelineHome";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Left from "../components/Left/Left";
 import Right from "../components/Right/Right";
+import { useAppSelector } from "../store/store";
 
 const Page = styled(Container)(({ theme }) => ({
   display: 'flex',
@@ -21,16 +21,20 @@ const Page = styled(Container)(({ theme }) => ({
 
 const Home = () => {
   const navigate = useNavigate()
+  const isAuth = useAppSelector(store => store.auth.isAuth)
  
-  useEffect(() => {
-    document.title = "Feed | Xlite";
-  }, []);
+  const setTitle = () => {
+    document.title = "Home | Xlite";
+  }
 
-  useEffect(() => {
-    if (!localAuthManager().isAuth()) {
+  const verifyIsAuth = useCallback(() => {
+    if(!isAuth) {
       navigate(routePaths.auth.login)
     }
-  }, [navigate]);
+  }, [navigate, isAuth])
+
+  useEffect(() => setTitle(), []);
+  useEffect(() => verifyIsAuth(), [verifyIsAuth]);
 
   return (
     <Page>

@@ -12,10 +12,10 @@ const ContainerDescription = styled('span')(({ theme }) => ({
   marginTop: '0.5rem',
   cursor: 'pointer',
   transition: 'background-color 0.3s',
-  '&:hover': {
-    backgroundColor: theme.palette.background.paper,
-  },
   borderRadius: '0.5rem',
+  '&:hover': {
+    backgroundColor: '#111',
+  },
   [theme.breakpoints.down('md')]: {
     fontSize: '0.9rem',
   },

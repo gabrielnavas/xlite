@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 import { Button, Paper, Typography, styled } from "@mui/material";
 
@@ -7,7 +7,7 @@ import RegisterForm from "../components/Auth/Register/RegisterForm";
 import { LockOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { routePaths } from "../Router";
-import localAuthManager from "../services/LocalAuthManager";
+import { useAppSelector } from "../store/store";
 
 const Page = styled(Paper)(() => ({
   display: 'flex',
@@ -26,17 +26,20 @@ const Icon = styled(LockOutlined)(() => ({
 
 const Register = () => {
   const navigate = useNavigate();
+  const isAuth = useAppSelector(store => store.auth.isAuth)
 
-  useEffect(() => {
+  const setTitle = () => {
     document.title = "Register | Xlite";
-  }, []);
+  }
 
-  useEffect(() => {
-    const authManager = localAuthManager()
-    if(authManager.isAuth()) {
+  const verifyIsAuth = useCallback(() => {
+    if(isAuth) {
       navigate(routePaths.home)
     }
-  }, [navigate]);
+  }, [navigate, isAuth])
+
+  useEffect(() => setTitle(), []);
+  useEffect(() => verifyIsAuth(), [verifyIsAuth]);
 
   const bottomArea = (
     <Typography variant="h1" component="h2">

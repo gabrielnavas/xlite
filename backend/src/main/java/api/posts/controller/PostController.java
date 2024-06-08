@@ -10,6 +10,7 @@ import api.posts.service.PostService;
 import api.posts.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
-
-import org.springframework.core.io.Resource;
 
 @RestController
 @RequestMapping("/post")
@@ -38,27 +37,27 @@ public class PostController {
         String email = tokenService.validateTokenAndGetSubject(authorization);
         User user = userService.findUserByEmail(email);
         Post post = postService.createPost(user, postDto.description());
-        PostResponseDTO responseDto = PostResponseDTO.from(post);
+        PostResponseDTO responseDto = PostResponseDTO.to(post);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping("/owner")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByOwner(
+    public ResponseEntity<List<PostResponseDTO>> fetchPostsByOwner(
             @RequestHeader("Authorization") String authorization
     ) {
         String email = tokenService.validateTokenAndGetSubject(authorization);
         User user = userService.findUserByEmail(email);
         List<Post> posts = postService.getAllPostsByOwner(user);
-        List<PostResponseDTO> responseDto = PostResponseDTO.from(posts);
+        List<PostResponseDTO> responseDto = PostResponseDTO.to(posts);
         return ResponseEntity.ok().body(responseDto);
     }
 
     @GetMapping
-    public ResponseEntity<List<PostResponseDTO>> getPosts(
+    public ResponseEntity<List<PostResponseDTO>> fetchPosts(
             @RequestHeader("Authorization") String authorization
     ) {
         List<Post> posts = postService.getAllPosts();
-        List<PostResponseDTO> responseDto = PostResponseDTO.from(posts);
+        List<PostResponseDTO> responseDto = PostResponseDTO.to(posts);
         return ResponseEntity.ok().body(responseDto);
     }
 
@@ -73,27 +72,30 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<List<PostResponseDTO>> deletePost(
+    public ResponseEntity<List<PostResponseDTO>> removePost(
             @RequestHeader("Authorization") String authorization,
             @PathVariable("id") UUID postId
-            ) {
+    ) {
         postService.removePost(postId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/images")
-    public ResponseEntity<Post> uploadImage(
+    public ResponseEntity<PostResponseDTO> uploadImage(
             @PathVariable("id") UUID postId,
-            @RequestParam("file") MultipartFile file
-        ) {
-        Post post = postService.storeImage(postId, file);
-        return ResponseEntity.ok().body(post);
+            @RequestParam("files") List<MultipartFile> files
+    ) {
+        Post post = postService.storeImages(postId, files);
+        PostResponseDTO postResponseDTO = PostResponseDTO.to(post);
+        return ResponseEntity.ok().body(postResponseDTO);
     }
 
-
-    @GetMapping("/images/{filename}")
-    public ResponseEntity<Resource> downloadImage(@PathVariable String filename) {
-        Resource file = postService.loadImage(filename);
+    @GetMapping("/{id}/images/{filename}")
+    public ResponseEntity<Resource> downloadImage(
+            @PathVariable("id") UUID postId,
+            @PathVariable String filename
+    ) {
+        Resource file = postService.loadImage(postId, filename);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }

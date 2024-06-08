@@ -1,26 +1,23 @@
 import { Modal } from "@mui/material";
 
-import { Data, UpdateForm } from "./types";
 import ModalContent from "./ModalContent";
+import { Post } from "../../../services/post/RemotePost";
 
 type Props = {
   open: boolean
   onClose: () => void,
-  data: Data;
-  onFinishUpdate: (data: UpdateForm) => void
+  post: Post;
 };
 
-const ModalUpdate = ({ open, onClose, data, onFinishUpdate }: Props) => {
+const ModalUpdate = ({ open, onClose, post }: Props) => {
   return (
     <Modal
       open={open}
       onClose={onClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
     >
       <ModalContent
-        data={data}
-        onFinishUpdate={onFinishUpdate}
+        post={post}
+        onClose={onClose}
       />
     </Modal>
   )

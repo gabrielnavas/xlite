@@ -1,5 +1,7 @@
 package api.posts.service;
 
+import api.posts.exception.PostAlreadyHasImagesException;
+import api.posts.exception.PostImageNotFoundException;
 import api.posts.exception.PostNotFoundException;
 import api.posts.models.Post;
 import api.posts.models.PostImage;
@@ -9,12 +11,13 @@ import api.posts.repository.PostRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.*;
-
-import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -23,7 +26,7 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
-    private final FileSystemStorageService fileSystemStorageService;
+    private final StorageService storageService;
 
     @Override
     public Post createPost(User owner, String description) {
@@ -47,16 +50,19 @@ public class PostServiceImpl implements PostService {
     @Override
     public void removePost(UUID id) {
         Optional<Post> optionalPost = postRepository.findById(id);
-        if(optionalPost.isEmpty()) {
+        if (optionalPost.isEmpty()) {
             throw new PostNotFoundException();
         }
-        postRepository.deleteById(id);
+        Post post = optionalPost.get();
+        post.getPostImages().forEach(postImage -> storageService.delete(postImage.getName()));
+        postImageRepository.deleteAllByPostId(post.getId());
+        postRepository.deleteById(post.getId());
     }
 
     @Override
     public void updatePartialPost(UUID id, String description) {
         Optional<Post> optionalPost = postRepository.findById(id);
-        if(optionalPost.isEmpty()) {
+        if (optionalPost.isEmpty()) {
             throw new PostNotFoundException();
         }
         Post post = optionalPost.get();
@@ -65,26 +71,48 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post storeImage(UUID postId, MultipartFile file) {
+    public Post storeImages(UUID postId, List<MultipartFile> images) {
         Optional<Post> optionalPost = postRepository.findById(postId);
-        if(optionalPost.isEmpty()) {
+        if (optionalPost.isEmpty()) {
             throw new PostNotFoundException();
         }
 
-        fileSystemStorageService.store(file);
-
         Post post = optionalPost.get();
-        PostImage postImage = new PostImage();
-        postImage.setName(file.getOriginalFilename());
+        if (!post.getPostImages().isEmpty()) {
+            throw new PostAlreadyHasImagesException();
+        }
 
-        postImage = postImageRepository.save(postImage);
-        post.getPostImages().add(postImage);
+        storageService.init();
+        images.forEach(image -> {
+            PostImage postImage = new PostImage();
+            postImage.setName(generatePostImageName(post, image.getOriginalFilename()));
+            postImage.setPost(post);
+            storageService.store(image, postImage.getName());
+            postImage = postImageRepository.save(postImage);
+            post.getPostImages().add(postImage);
+        });
 
         return post;
     }
 
     @Override
-    public Resource loadImage(String imageName) {
-        return fileSystemStorageService.loadAsResource(imageName);
+    public Resource loadImage(UUID postId, String imageName) {
+        Optional<Post> optionalPost = postRepository.findById(postId);
+        if (optionalPost.isEmpty()) {
+            throw new PostNotFoundException();
+        }
+        Post post = optionalPost.get();
+        boolean imageExists = post.getPostImages().stream().anyMatch(postImage -> postImage.getName().equals(imageName));
+        if (!imageExists) {
+            throw new PostImageNotFoundException();
+        }
+        return storageService.loadAsResource(imageName);
+    }
+
+    private String generatePostImageName(Post post, String imageName) {
+        final String secondsName = imageName == null || imageName.isBlank()
+                ? UUID.randomUUID().toString()
+                : imageName;
+        return String.format("%s:%s", post.getId(), secondsName);
     }
 }

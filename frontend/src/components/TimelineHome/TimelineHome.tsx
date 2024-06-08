@@ -1,68 +1,55 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Alert, AlertColor, Snackbar, styled } from "@mui/material";
+import { styled } from "@mui/material";
 
-import localAuthManager from "../../services/LocalAuthManager";
-
-import Timeline, { Post, SnackData } from "../Timeline/Timeline";
+import Timeline from "../Timeline/Timeline";
 import { routePaths } from "../../Router";
-import remotePost from "../../services/RemotePost";
+import remotePost from "../../services/post/RemotePost";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import { addPosts } from "../../store/features/postsSlice";
+import { failedMessage, infoMessage, remoteFinish, remoteRequest } from "../../store/features/remoteRequestSlice";
+import { logout } from "../../store/features/authSlice";
 
-const Container = styled('div')(() => ({
-}));
+const Container = styled('div')(() => ({}));
 
-const TimelineContainer = styled('div')(() => ({
-}));
+const TimelineContainer = styled('div')(() => ({}));
 
 
 const TimelineHome = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [snack, setSnack] = useState<SnackData>({} as SnackData);
-
   const navigate = useNavigate()
 
-  const logout = useCallback(() => {
-    setSnack({ message: "Your session has expired!", open: true, severity: 'info', position: { horizontal: 'center', vertical: 'bottom' } })
-    setTimeout(() => {
-      localAuthManager().logout();
-      navigate(routePaths.auth.login)
-    }, 3000)
-  }, [navigate])
+  const dispatch = useAppDispatch()
+  const timeline = useAppSelector(state => state.posts.timeline)
+  const token = useAppSelector(state => state.auth.token)
 
   useEffect(() => {
     (async () => {
-      const result = await remotePost().getAll()
-      if (result.tokenExpired) {
-        logout()
-        return
+      try {
+        dispatch(remoteRequest())
+        const result = await remotePost().getAll(token)()
+        if (result.tokenExpired) {
+          dispatch(infoMessage({ message: "Your session has expired!" }))
+          dispatch(logout())
+          navigate(routePaths.auth.login)
+          return
+        } else if (result.body) {
+          dispatch(addPosts({ posts: result.body }))
+        }
       }
-      if (result.body) {
-        setPosts(result.body)
+      catch (ex) {
+        dispatch(failedMessage({ message: 'try again later' }))
+      } finally {
+        dispatch(remoteFinish())
       }
     })()
-  }, [logout]);
+  }, [dispatch, token, navigate]);
 
   return (
     <Container>
       <TimelineContainer>
-        <Timeline posts={posts} />
+        <Timeline posts={timeline} />
       </TimelineContainer>
-
-      <Snackbar
-        open={snack.open}
-        onClose={() => setSnack({
-          open: false,
-          message: '',
-          severity: '',
-          position: { horizontal: 'center', vertical: 'bottom' }
-        })}
-        autoHideDuration={5000}
-        anchorOrigin={snack.position} >
-        <Alert severity={snack.severity as AlertColor} sx={{ width: '100%' }}>
-          <span style={{ fontSize: '1.1rem' }}>{snack.message}</span>
-        </Alert>
-      </Snackbar>
     </Container>
   )
 }

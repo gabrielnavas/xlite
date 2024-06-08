@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 import { Button, Paper, Typography, styled } from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
@@ -7,7 +7,9 @@ import AuthPaper from "../components/Auth/AuthPaper";
 import LoginForm from "../components/Auth/Login/LoginForm";
 import { useNavigate } from "react-router-dom";
 import { routePaths } from "../Router";
-import localAuthManager from "../services/LocalAuthManager";
+
+import { useAppDispatch, useAppSelector } from "../store/store";
+import { logout } from "../store/features/authSlice";
 
 const Page = styled(Paper)(() => ({
   display: 'flex',
@@ -27,16 +29,23 @@ const Icon = styled(LoginIcon)(() => ({
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    document.title = "Login | Xlite";
-  }, []);
+  const isAuth = useAppSelector(store => store.auth.isAuth)
+  const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    const authManager = localAuthManager()
-    if(authManager.isAuth()) {
+  const setTitle = () => {
+    document.title = "Login | Xlite";
+  }
+
+  const verifyIsAuth = useCallback(() => {
+    if(isAuth) {
       navigate(routePaths.home)
+    } else {
+      dispatch(logout())
     }
-  }, [navigate]);
+  }, [navigate, isAuth, dispatch])
+
+  useEffect(() => setTitle(), []);
+  useEffect(() => verifyIsAuth(), [verifyIsAuth]);
 
   const bottomArea = (
     <Typography variant="h1" component="h2">

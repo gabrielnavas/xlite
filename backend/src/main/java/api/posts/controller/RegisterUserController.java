@@ -25,6 +25,6 @@ public class RegisterUserController {
     public ResponseEntity<AuthResponseDTO> register(@Valid @RequestBody RegisterRequestDTO body) {
         User user = registerUserService.registerUser(body);
         String token = tokenService.generateToken(user);
-        return ResponseEntity.ok(new AuthResponseDTO(token));
+        return ResponseEntity.ok(AuthResponseDTO.to(token, user));
     }
 }

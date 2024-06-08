@@ -5,10 +5,14 @@ import { Alert, AlertColor, Button, Snackbar, TextField, useMediaQuery } from "@
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 
-import RemoteRegister from "../../../services/RemoteRegister";
-import localAuthManager from "../../../services/LocalAuthManager";
+import remoteRegister from "../../../services/auth/RemoteRegister";
 import { useNavigate } from "react-router-dom";
 import { routePaths } from "../../../Router";
+import { useAppDispatch, useAppSelector } from "../../../store/store";
+import { LockOutlined, Refresh } from "@mui/icons-material";
+import { setUser } from "../../../store/features/userSlice";
+import { login } from "../../../store/features/authSlice";
+import { remoteFinish, remoteRequest, successMessage, warningMessage } from "../../../store/features/remoteRequestSlice";
 
 type RegisterForm = {
   fullName: string
@@ -45,6 +49,9 @@ const RegisterForm = () => {
 
   const xs = useMediaQuery('(max-width:600px)');
 
+  const dispatch = useAppDispatch()
+  const isLoading = useAppSelector(store => store.remoteRequest.isLoading)
+
   const navigate = useNavigate();
 
   const formik = useFormik({
@@ -58,29 +65,30 @@ const RegisterForm = () => {
     validationSchema: validationSchema,
     onSubmit: async (values: RegisterForm, { resetForm }) => {
       try {
-        const result = await RemoteRegister(
+        dispatch(remoteRequest())
+        const result = await remoteRegister(
           values.fullName,
           values.username,
           values.email,
           values.password,
           values.passwordConfirmation
         )
-        if (!result.success) {
-          setSnack({ message: result.message, open: true, severity: 'warning' })
+        if (!result.success || !result.body) {
+          dispatch(warningMessage({
+            message: result.message
+          }))
         } else {
-
-          if (result.body) {
-            localAuthManager().setToken(result.body.token)
-            setSnack({ message: result.message, open: true, severity: 'success' })
-            setTimeout(() => navigate(routePaths.home), 2000)
-            resetForm();
-          } else {
-            setSnack({ message: 'Try again later', open: true, severity: 'warning' })
-          }
+          dispatch(login({ token: result.body.token }))
+          dispatch(setUser({ user: result.body.user }))
+          dispatch(successMessage({ message: result.message }))
+          navigate(routePaths.home)
+          resetForm();
         }
       }
       catch (ex) {
         setSnack({ message: 'Try again later', open: true, severity: 'warning' })
+      } finally {
+        dispatch(remoteFinish())
       }
     },
   });
@@ -154,7 +162,11 @@ const RegisterForm = () => {
         helperText={formik.touched.passwordConfirmation && formik.errors.passwordConfirmation}
         size={xs ? 'small' : 'medium'}
       />
+
+
       <Button
+        disabled={isLoading}
+        endIcon={isLoading ? <Refresh /> : <LockOutlined />}
         color="primary"
         variant="contained"
         fullWidth

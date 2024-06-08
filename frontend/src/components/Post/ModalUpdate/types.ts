@@ -1,15 +1,5 @@
 export type UpdateForm = {
-  description: string;
+  description: string
 }
 
-export type Data = {
-  user: {
-    avatarUrl: string
-    fullName: string;
-    username: string;
-  },
-  post: {
-    text: string;
-    createdAt: Date;
-  }
-}
+export type OnFinishUpdate = (postId: string, postDescription: string) => void 

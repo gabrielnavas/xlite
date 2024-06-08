@@ -1,6 +1,9 @@
 import { Avatar, styled } from "@mui/material";
 
 const Container = styled('section')(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  width: '10%',
   padding: '0.75rem 1rem 1rem 0.50rem',
   [theme.breakpoints.down('md')]: {
     padding: '0.75rem 1rem 1rem 0.25rem',
@@ -10,14 +13,11 @@ const Container = styled('section')(({ theme }) => ({
   },
 }));
 
-type Props = {
-  avatarUrl: string;
-}
 
-const LeftSide = ({ avatarUrl }: Props) => {
+const LeftSide = () => {
   return (
     <Container>
-      <Avatar alt="Perfil image" src={avatarUrl} />
+      <Avatar alt="Perfil image" />
     </Container>
   )
 }

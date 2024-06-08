@@ -1,8 +1,4 @@
-type RegisterResponse = {
-  message: string;
-  success: boolean
-  body?: { token: string }
-};
+import { AuthResponse, BodyResponse } from "./types";
 
 const possivelBadRequestsMessages = ['email or password is incorrect',]
 
@@ -13,7 +9,7 @@ const formatMessage = (message: string) => {
   return messageFormatted;
 }
 
-const remoteLogin = async (email: string, password: string): Promise<RegisterResponse> => {
+const remoteLogin = async (email: string, password: string): Promise<AuthResponse> => {
   const body = {
     email: email,
     password: password,
@@ -30,7 +26,7 @@ const remoteLogin = async (email: string, password: string): Promise<RegisterRes
   })
 
   if (!response.ok) {
-    const data = await response.json();
+    const data = await response.json() as { message: string };
     if (data.message) {
       const isRecognizableMessage = possivelBadRequestsMessages.some(message => message === data.message)
       if (isRecognizableMessage) {
@@ -46,12 +42,19 @@ const remoteLogin = async (email: string, password: string): Promise<RegisterRes
     }
   }
 
-  const data = await response.json()
+  const data = await response.json() as BodyResponse
   return {
     message: 'Login with success',
     success: true,
     body: {
       token: data.token,
+      user: {
+        createdAt: data.user.created_at,
+        email: data.user.email,
+        fullName: data.user.full_name,
+        roles: data.user.roles,
+        username: data.user.username
+      }
     },
   }
 }
